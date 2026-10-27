@@ -212,3 +212,206 @@ export async function fetchSamples(): Promise<{ samples: SyntheticSample[] }> {
   }
   return res.json();
 }
+
+// =====================================================================
+// Gmail & OAuth Types & API Methods
+// =====================================================================
+
+export interface GmailAuthStatus {
+  authenticated: boolean;
+  configured: boolean;
+  email?: string;
+  name?: string;
+  picture?: string;
+  connected_at?: number;
+  scopes?: string[];
+  setup_instructions?: {
+    title: string;
+    steps: string[];
+    redirect_uri: string;
+    required_scopes: string[];
+  };
+}
+
+export interface GmailMessageItem {
+  id: string;
+  thread_id: string;
+  sender: string;
+  recipient: string;
+  subject: string;
+  date: string;
+  snippet: string;
+  body_preview: string;
+  has_html: boolean;
+  has_attachments: boolean;
+}
+
+export interface GmailListResponse {
+  total_found: number;
+  next_page_token?: string;
+  messages: GmailMessageItem[];
+}
+
+export interface ScannedEmailItem {
+  id: string;
+  thread_id: string;
+  sender: string;
+  recipient: string;
+  subject: string;
+  date: string;
+  snippet: string;
+  body_preview: string;
+  predicted_class: number;
+  predicted_label: string;
+  is_spam: boolean;
+  spam_probability: number;
+  ham_probability: number;
+  review_status: "Spam" | "Ham" | "Needs Review";
+  confidence_level: string;
+  needs_review: boolean;
+  processing_time_ms: number;
+  top_features: FeatureContribution[];
+  warning_advisory: string;
+  has_html: boolean;
+  has_attachments: boolean;
+}
+
+export interface GmailScanResponse {
+  total_scanned: number;
+  spam_count: number;
+  ham_count: number;
+  review_count: number;
+  spam_percentage: number;
+  ham_percentage: number;
+  review_percentage: number;
+  scan_timestamp: string;
+  duration_ms: number;
+  items: ScannedEmailItem[];
+}
+
+export interface SettingsData {
+  threshold_low: number;
+  threshold_high: number;
+  updated_at?: string;
+}
+
+export async function fetchAuthStatus(): Promise<GmailAuthStatus> {
+  const res = await fetch(`${API_BASE}/api/auth/status`, {
+    cache: "no-store",
+    credentials: "include",
+  });
+  if (!res.ok) {
+    throw new Error(`Auth status error: HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function startGoogleAuth(): Promise<{ authorization_url: string; state: string }> {
+  const res = await fetch(`${API_BASE}/api/auth/google/start`, {
+    cache: "no-store",
+    credentials: "include",
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: "OAuth initialization failed" }));
+    throw new Error(err.detail || `OAuth error: HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function disconnectGmail(): Promise<{ success: boolean; message: string }> {
+  const res = await fetch(`${API_BASE}/api/auth/disconnect`, {
+    method: "POST",
+    credentials: "include",
+  });
+  if (!res.ok) {
+    throw new Error(`Disconnect error: HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function fetchGmailMessages(
+  query = "",
+  max_results = 20,
+  page_token?: string
+): Promise<GmailListResponse> {
+  const params = new URLSearchParams({
+    query,
+    max_results: String(max_results),
+  });
+  if (page_token) params.set("page_token", page_token);
+
+  const res = await fetch(`${API_BASE}/api/gmail/messages?${params.toString()}`, {
+    cache: "no-store",
+    credentials: "include",
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: "Failed to list Gmail messages" }));
+    throw new Error(err.detail || `Gmail list error: HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function scanRecentGmail(
+  max_messages = 15,
+  query = "",
+  explain = true,
+  top_k = 5
+): Promise<GmailScanResponse> {
+  const res = await fetch(`${API_BASE}/api/gmail/scan`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({ max_messages, query, explain, top_k }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: "Gmail scan failed" }));
+    throw new Error(err.detail || `Gmail scan error: HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function scanSelectedGmail(
+  message_ids: string[],
+  explain = true,
+  top_k = 5
+): Promise<GmailScanResponse> {
+  const res = await fetch(`${API_BASE}/api/gmail/scan-selected`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({ message_ids, explain, top_k }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: "Selected scan failed" }));
+    throw new Error(err.detail || `Scan error: HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function fetchSettings(): Promise<SettingsData> {
+  const res = await fetch(`${API_BASE}/api/settings`, {
+    cache: "no-store",
+    credentials: "include",
+  });
+  if (!res.ok) {
+    throw new Error(`Settings fetch error: HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function updateSettings(
+  threshold_low: number,
+  threshold_high: number
+): Promise<SettingsData> {
+  const res = await fetch(`${API_BASE}/api/settings`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({ threshold_low, threshold_high }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: "Settings update failed" }));
+    throw new Error(err.detail || `Settings update error: HTTP ${res.status}`);
+  }
+  return res.json();
+}

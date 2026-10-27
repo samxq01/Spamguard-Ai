@@ -14,8 +14,10 @@ import {
   HelpCircle,
 } from "lucide-react";
 import { classifyEmail, PredictionResponse, FeatureContribution } from "@/lib/api";
+import { useWorkspace } from "@/lib/WorkspaceContext";
 
 export default function EmailScanner() {
+  const { recordScan } = useWorkspace();
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
   const [loading, setLoading] = useState(false);
@@ -102,6 +104,42 @@ export default function EmailScanner() {
     try {
       const data = await classifyEmail(subject, body, true, 10);
       setResult(data);
+      recordScan({
+        total_scanned: 1,
+        spam_count: data.is_spam ? 1 : 0,
+        ham_count: !data.is_spam ? 1 : 0,
+        review_count: 0,
+        spam_percentage: data.is_spam ? 100 : 0,
+        ham_percentage: !data.is_spam ? 100 : 0,
+        review_percentage: 0,
+        scan_timestamp: new Date().toISOString(),
+        duration_ms: data.processing_time_ms,
+        items: [
+          {
+            id: `single-${Date.now()}`,
+            thread_id: "",
+            sender: "Direct Input",
+            recipient: "",
+            subject: subject || "(No Subject)",
+            date: new Date().toLocaleTimeString(),
+            snippet: body.slice(0, 100),
+            body_preview: body.slice(0, 180),
+            predicted_class: data.predicted_class,
+            predicted_label: data.predicted_label,
+            is_spam: data.is_spam,
+            spam_probability: data.spam_probability,
+            ham_probability: data.ham_probability,
+            review_status: data.is_spam ? "Spam" : "Ham",
+            confidence_level: "High Confidence",
+            needs_review: false,
+            processing_time_ms: data.processing_time_ms,
+            top_features: data.top_features,
+            warning_advisory: "Lexical classification is based on text patterns and does not guarantee safety.",
+            has_html: false,
+            has_attachments: false,
+          },
+        ],
+      });
     } catch (err: any) {
       setError(err.message || "Failed to communicate with prediction engine.");
     } finally {
@@ -114,19 +152,19 @@ export default function EmailScanner() {
   const hamPct = result ? Math.round(result.ham_probability * 100) : 0;
 
   return (
-    <section id="scanner" className="py-24 px-6 md:px-12 max-w-7xl mx-auto border-t border-white/[0.08]">
+    <div className="space-y-8 max-w-6xl mx-auto">
       {/* Category Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-12 border-b border-white/[0.08]">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-white/[0.08]">
         <div>
           <span className="font-mono text-xs uppercase tracking-[0.14em] text-[#B8F44A] block mb-2">
-            03 / Real-Time Classifier
+            WORKSPACE / AD-HOC INSPECTION
           </span>
-          <h2 className="text-4xl sm:text-6xl font-title uppercase tracking-tight text-[#F4F3F0]">
-            Single Email <span className="italic text-[#B8F44A]">Scanner</span>
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#F4F3F0]">
+            Spam Detection Workbench
           </h2>
         </div>
-        <p className="max-w-md text-sm md:text-base text-[#A3A3A8] font-light leading-relaxed">
-          Evaluate any raw email in sub-millisecond real time. View calibrated class probabilities and inspect exact token-level mathematical log-odds contributions.
+        <p className="max-w-md text-xs sm:text-sm text-[#A3A3A8] font-mono leading-relaxed">
+          Evaluate raw email subject and body in real time. Inspect calibrated class probabilities and exact token-level log-odds contributions.
         </p>
       </div>
 
@@ -389,6 +427,6 @@ export default function EmailScanner() {
           )}
         </div>
       </div>
-    </section>
+    </div>
   );
 }

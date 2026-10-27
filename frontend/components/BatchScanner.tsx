@@ -15,8 +15,10 @@ import {
   Clock,
 } from "lucide-react";
 import { classifyBatchCsv, BatchResponse, BatchItemResult } from "@/lib/api";
+import { useWorkspace } from "@/lib/WorkspaceContext";
 
 export default function BatchScanner() {
+  const { recordScan } = useWorkspace();
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<BatchResponse | null>(null);
@@ -84,6 +86,40 @@ export default function BatchScanner() {
     try {
       const data = await classifyBatchCsv(file, false);
       setResult(data);
+      recordScan({
+        total_scanned: data.total_count,
+        spam_count: data.spam_count,
+        ham_count: data.ham_count,
+        review_count: 0,
+        spam_percentage: data.spam_percentage,
+        ham_percentage: data.ham_percentage,
+        review_percentage: 0,
+        scan_timestamp: new Date().toISOString(),
+        duration_ms: data.total_duration_ms,
+        items: data.items.map((it) => ({
+          id: it.id || "batch-item",
+          thread_id: "",
+          sender: "CSV Upload",
+          recipient: "",
+          subject: it.subject,
+          date: new Date().toLocaleTimeString(),
+          snippet: it.body_preview,
+          body_preview: it.body_preview,
+          predicted_class: it.predicted_class,
+          predicted_label: it.predicted_label,
+          is_spam: it.is_spam,
+          spam_probability: it.spam_probability,
+          ham_probability: it.ham_probability,
+          review_status: it.is_spam ? "Spam" : "Ham",
+          confidence_level: "High Confidence",
+          needs_review: false,
+          processing_time_ms: it.processing_time_ms,
+          top_features: it.top_features,
+          warning_advisory: "Lexical classification is based on text patterns and does not guarantee safety.",
+          has_html: false,
+          has_attachments: false,
+        })),
+      });
     } catch (err: any) {
       setError(err.message || "Failed to process batch CSV.");
     } finally {
@@ -131,15 +167,15 @@ export default function BatchScanner() {
     : [];
 
   return (
-    <section id="batch" className="py-24 px-6 md:px-12 max-w-7xl mx-auto border-t border-white/[0.08]">
+    <div className="space-y-8 max-w-6xl mx-auto">
       {/* Category Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-12 border-b border-white/[0.08]">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-white/[0.08]">
         <div>
           <span className="font-mono text-xs uppercase tracking-[0.14em] text-[#B8F44A] block mb-2">
-            04 / Vectorized Throughput
+            WORKSPACE / BATCH CLASSIFICATION
           </span>
-          <h2 className="text-4xl sm:text-6xl font-title uppercase tracking-tight text-[#F4F3F0]">
-            Batch CSV <span className="italic text-[#B8F44A]">Classifier</span>
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#F4F3F0]">
+            Batch CSV Scanner
           </h2>
         </div>
         <div className="flex flex-col items-start md:items-end gap-3">
@@ -364,6 +400,6 @@ export default function BatchScanner() {
           </div>
         </div>
       )}
-    </section>
+    </div>
   );
 }

@@ -51,15 +51,15 @@ export default function ModelAnalytics() {
   ];
 
   return (
-    <section id="analytics" className="py-24 px-6 md:px-12 max-w-7xl mx-auto border-t border-white/[0.08]">
+    <div className="space-y-8 max-w-6xl mx-auto">
       {/* Category Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-12 border-b border-white/[0.08]">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-white/[0.08]">
         <div>
           <span className="font-mono text-xs uppercase tracking-[0.14em] text-[#B8F44A] block mb-2">
-            05 / Empirical Certification
+            WORKSPACE / ACADEMIC CERTIFICATION
           </span>
-          <h2 className="text-4xl sm:text-6xl font-title uppercase tracking-tight text-[#F4F3F0]">
-            Model <span className="italic text-[#B8F44A]">Intelligence</span>
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#F4F3F0]">
+            Model Analytics &amp; Statistical Evaluation
           </h2>
         </div>
         <div className="flex flex-col items-start md:items-end font-mono text-xs text-[#A3A3A8]">
@@ -312,6 +312,6 @@ export default function ModelAnalytics() {
           </div>
         </div>
       )}
-    </section>
+    </div>
   );
 }
