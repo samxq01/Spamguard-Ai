@@ -15,11 +15,16 @@ import logging
 import os
 import secrets
 import time
+from pathlib import Path
 from typing import Any, Dict, Optional, Tuple
 from urllib.parse import urlencode
 
 import httpx
+from dotenv import load_dotenv
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+load_dotenv(PROJECT_ROOT / ".env", override=True)
 
 logger = logging.getLogger("SpamGuardAI.Auth")
 
@@ -53,8 +58,14 @@ class GmailAuthManager:
         session_secret: Optional[str] = None,
         frontend_url: Optional[str] = None,
     ) -> None:
-        self.client_id = client_id or os.getenv("GOOGLE_CLIENT_ID", "").strip()
-        self.client_secret = client_secret or os.getenv("GOOGLE_CLIENT_SECRET", "").strip()
+        self.client_id = (
+            client_id if client_id is not None else os.getenv("GOOGLE_CLIENT_ID", "").strip()
+        )
+        self.client_secret = (
+            client_secret
+            if client_secret is not None
+            else os.getenv("GOOGLE_CLIENT_SECRET", "").strip()
+        )
         self.redirect_uri = (
             redirect_uri
             or os.getenv("GOOGLE_REDIRECT_URI", "http://localhost:8000/api/auth/google/callback").strip()
@@ -74,8 +85,14 @@ class GmailAuthManager:
         """Verifies if Google OAuth credentials have been supplied and are not placeholders."""
         if not self.client_id or not self.client_secret:
             return False
-        # Catch common placeholder text
-        placeholders = {"your_client_id_here", "google_client_id", "placeholder", "xxx"}
+        placeholders = {
+            "your_client_id_here",
+            "google_client_id",
+            "placeholder",
+            "xxx",
+            "your_google_client_id.apps.googleusercontent.com",
+            "your_google_client_secret",
+        }
         if self.client_id.lower() in placeholders or self.client_secret.lower() in placeholders:
             return False
         return True
@@ -225,8 +242,25 @@ _auth_manager: Optional[GmailAuthManager] = None
 
 
 def get_auth_manager() -> GmailAuthManager:
-    """Returns the process-wide GmailAuthManager instance."""
+    """Returns the process-wide GmailAuthManager instance with up-to-date environment credentials."""
     global _auth_manager
+    load_dotenv(PROJECT_ROOT / ".env", override=True)
     if _auth_manager is None:
         _auth_manager = GmailAuthManager()
+    else:
+        # Re-read credentials if updated in .env while process is active
+        new_client_id = os.getenv("GOOGLE_CLIENT_ID", "").strip()
+        new_client_secret = os.getenv("GOOGLE_CLIENT_SECRET", "").strip()
+        new_redirect_uri = os.getenv("GOOGLE_REDIRECT_URI", "").strip()
+        new_frontend_url = os.getenv("FRONTEND_URL", "").strip()
+
+        if new_client_id:
+            _auth_manager.client_id = new_client_id
+        if new_client_secret:
+            _auth_manager.client_secret = new_client_secret
+        if new_redirect_uri:
+            _auth_manager.redirect_uri = new_redirect_uri
+        if new_frontend_url:
+            _auth_manager.frontend_url = new_frontend_url.rstrip("/")
+
     return _auth_manager

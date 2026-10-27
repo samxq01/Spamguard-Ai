@@ -26,6 +26,7 @@ import {
   fetchGmailMessages,
   scanRecentGmail,
   scanSelectedGmail,
+  startGoogleAuth,
   GmailMessageItem,
   ScannedEmailItem,
 } from "@/lib/api";
@@ -52,6 +53,22 @@ export default function GmailInboxView() {
   const [scannedItems, setScannedItems] = useState<ScannedEmailItem[]>([]);
   const [filter, setFilter] = useState<"all" | "spam" | "ham" | "review">("all");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
+  const [connecting, setConnecting] = useState(false);
+
+  const handleConnect = async () => {
+    setConnecting(true);
+    setScanError(null);
+    try {
+      const data = await startGoogleAuth();
+      if (data.authorization_url) {
+        window.location.href = data.authorization_url;
+      }
+    } catch (err: any) {
+      setScanError(err.message || "Failed to initialize Google OAuth flow.");
+      setConnecting(false);
+    }
+  };
 
   // Handle Scan Recent Inbox
   const handleScanRecent = async () => {
@@ -175,10 +192,11 @@ export default function GmailInboxView() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <button
               type="button"
-              onClick={() => setActiveTab("accounts")}
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#B8F44A] text-[#0B0B0D] font-mono text-xs font-bold hover:bg-[#a6e03e] transition-all flex items-center justify-center gap-2 shadow-sm"
+              disabled={connecting}
+              onClick={isConfigured ? handleConnect : () => setActiveTab("accounts")}
+              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#B8F44A] text-[#0B0B0D] font-mono text-xs font-bold hover:bg-[#a6e03e] transition-all flex items-center justify-center gap-2 shadow-sm disabled:opacity-50"
             >
-              <span>{isConfigured ? "Connect Account" : "Open Setup Guide"}</span>
+              <span>{connecting ? "Opening Google Sign-In..." : isConfigured ? "Connect Gmail Account" : "Open Setup Guide"}</span>
               <ExternalLink className="w-3.5 h-3.5" />
             </button>
             <button

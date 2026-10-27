@@ -18,6 +18,7 @@ import {
   AlertOctagon,
 } from "lucide-react";
 import { useWorkspace } from "@/lib/WorkspaceContext";
+import { startGoogleAuth } from "@/lib/api";
 
 export default function DashboardView() {
   const {
@@ -29,8 +30,23 @@ export default function DashboardView() {
     setInspectItem,
   } = useWorkspace();
 
+  const [connecting, setConnecting] = React.useState(false);
   const isConnected = !!authStatus?.authenticated;
   const isConfigured = authStatus?.configured ?? true;
+
+  const handleConnect = async () => {
+    setConnecting(true);
+    try {
+      const data = await startGoogleAuth();
+      if (data.authorization_url) {
+        window.location.href = data.authorization_url;
+      }
+    } catch {
+      setActiveTab("accounts");
+    } finally {
+      setConnecting(false);
+    }
+  };
 
   return (
     <div className="space-y-8 max-w-6xl mx-auto">
@@ -104,10 +120,11 @@ export default function DashboardView() {
             ) : (
               <button
                 type="button"
-                onClick={() => setActiveTab("accounts")}
-                className="px-4 py-2.5 rounded-xl bg-[#1A1A20] hover:bg-white/[0.08] text-[#F4F3F0] font-mono text-xs font-semibold transition-all border border-white/[0.12] flex items-center gap-2"
+                disabled={connecting}
+                onClick={isConfigured ? handleConnect : () => setActiveTab("accounts")}
+                className="px-4 py-2.5 rounded-xl bg-[#1A1A20] hover:bg-white/[0.08] text-[#F4F3F0] font-mono text-xs font-semibold transition-all border border-white/[0.12] flex items-center gap-2 disabled:opacity-50"
               >
-                <span>{isConfigured ? "Connect Gmail Account" : "Configure Credentials"}</span>
+                <span>{connecting ? "Opening Google..." : isConfigured ? "Connect Gmail Account" : "Configure Credentials"}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             )}

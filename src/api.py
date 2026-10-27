@@ -21,10 +21,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, Field
 
+from dotenv import load_dotenv
+
 # Ensure root is in sys.path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
+
+# Load .env file automatically from project root
+load_dotenv(PROJECT_ROOT / ".env", override=True)
 
 from src.config import (
     DEFAULT_TOP_K_EXPLANATIONS,
