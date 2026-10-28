@@ -1,0 +1,92 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam handwritten false
+skinparam roundcorner 6
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI", Arial, sans-serif
+skinparam defaultFontSize 11
+skinparam activityBorderColor #334155
+skinparam activityBackgroundColor #F8FAFC
+skinparam activityDiamondBorderColor #2563EB
+skinparam activityDiamondBackgroundColor #EFF6FF
+skinparam arrowColor #1E293B
+
+title <b>SpamGuard AI — Email Threat Classification Activity Diagram</b>\n<size:10>Software Engineering IA3 Evaluation | Process Flow & Decision Logic</size>
+
+start
+
+:User enters Email Subject and Body\n(or selects demonstration sample);
+
+:Submit Scan Request\n(Click 'Classify Email' or trigger API);
+
+partition "Input Normalization & Defensive Validation" {
+    :Combine Subject and Body\n(subject + "\\n\\n" + body);
+    :Execute clean_text():\n- Unicode NFKC normalization\n- Regex punctuation & whitespace cleanup\n- Lowercase conversion;
+
+    if (Is cleaned text empty or whitespace-only?) then (yes)
+        #FFEEEE:Generate SpamGuardValidationError\n("Email content is empty");
+        :Return HTTP 422 Unprocessable Entity;
+        :Render validation alert banner on UI;
+        stop
+    else (no)
+    endif
+
+    if (Length > MAX_INPUT_CHARS [1,000,000]?) then (yes)
+        #FFEEEE:Generate Denial-of-Service Defense Error\n("Payload exceeds 1 MB limit");
+        :Return HTTP 422 Unprocessable Entity;
+        :Render security alert banner on UI;
+        stop
+    else (no)
+    endif
+}
+
+partition "Integrity & Pre-Inference Verification" {
+    if (Is model pipeline SHA-256 authenticated?) then (valid: c652119c...)
+        :Proceed to inference engine;
+    else (mismatch or corrupt)
+        #FFEEEE:Halt with SpamGuardModelError\n("Cryptographic integrity check failed");
+        :Return HTTP 500 Internal Error;
+        stop
+    endif
+}
+
+partition "Feature Extraction & Probabilistic Inference" {
+    :Transform text via fitted TF-IDF Vectorizer\n(Generate 1 x 20,000 sparse feature vector);
+    :Compute log-likelihoods via Multinomial Naïve Bayes\n(Apply Lidstone smoothing alpha = 0.1);
+    :Apply Softmax normalization to obtain posterior\nprobabilities P(Ham) and P(Spam);
+    
+    if (P(Spam) >= 0.50) then (yes)
+        :Assign predicted_class = 1\npredicted_label = "Spam";
+    else (no)
+        :Assign predicted_class = 0\npredicted_label = "Ham";
+    endif
+}
+
+partition "Model Explainability (Optional)" {
+    if (Was explainability requested [explain == True]?) then (yes)
+        :Retrieve active non-zero vocabulary tokens in document;
+        :Calculate log-odds difference for each token:\nlog_odds_diff = log P(token|Spam) - log P(token|Ham);
+        :Compute token contribution = TF-IDF weight * log_odds_diff;
+        :Rank tokens by absolute magnitude;\nSelect Top-K (default 5 or 10) features;
+        :Tag each token as 'Spam-leaning' (diff > 0)\nor 'Ham-leaning' (diff < 0);
+    else (no)
+        :Set top_features = [];
+    endif
+}
+
+partition "Result Packaging & Presentation" {
+    :Record processing duration (processing_time_ms);
+    :Assemble immutable PredictionResult object;
+    :Render Threat Verdict Card\n(Green Ham Shield vs. Red Phishing Warning);
+    :Display Calibrated Probability Gauge;\nDisplay processing latency telemetry;
+    if (Are feature contributions present?) then (yes)
+        :Render interactive Feature Contribution Table\nwith horizontal polarity impact bars;
+    else (no)
+    endif
+}
+
+stop
+
+@enduml
+

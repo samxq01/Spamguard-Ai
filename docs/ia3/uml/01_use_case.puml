@@ -1,0 +1,95 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam handwritten false
+skinparam roundcorner 8
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI", Arial, sans-serif
+skinparam defaultFontSize 12
+skinparam arrowColor #1E293B
+skinparam actorBorderColor #0F172A
+skinparam actorBackgroundColor #E2E8F0
+skinparam usecaseBorderColor #2563EB
+skinparam usecaseBackgroundColor #EFF6FF
+
+title <b>SpamGuard AI — System Use Case Diagram</b>\n<size:11>Software Engineering IA3 Evaluation | Academic Micro-Project 05</size>
+
+left to right direction
+
+actor "Security Analyst /\nEnd User" as User
+actor "Academic Evaluator /\nAdministrator" as Admin
+actor "Google OAuth 2.0\nIdentity Provider" as GoogleIDP <<External Service>>
+
+rectangle "SpamGuard AI System Boundary" as System {
+    package "Core Email Classification" {
+        usecase "UC-01: Enter / Select\nEmail Subject & Body" as UC01
+        usecase "UC-02: Classify Single Email\n(Spam / Ham Inference)" as UC02
+        usecase "UC-03: View Threat Verdict &\nCalibrated Probabilities" as UC03
+        usecase "UC-04: Inspect Token-Level\nFeature Contributions\n(Log-Odds Explainability)" as UC04
+    }
+
+    package "Batch & Data Processing" {
+        usecase "UC-05: Upload CSV &\nExecute Batch Classification" as UC05
+        usecase "UC-06: Filter Batch Results\n(All / Spam / Ham / Review)" as UC06
+        usecase "UC-07: Export Sanitized CSV\n(Formula Injection Neutralized)" as UC07
+    }
+
+    package "System Audit & Analytics" {
+        usecase "UC-08: View Model Evaluation\nAnalytics & Confusion Matrix" as UC08
+        usecase "UC-09: Verify Frozen Model\nSHA-256 Checksum" as UC09
+        usecase "UC-10: Check Backend API\nHealth & Telemetry" as UC10
+    }
+
+    package "Gmail Mailbox Security" {
+        usecase "UC-11: Connect Gmail Account\n(OAuth 2.0 Minimal Scopes)" as UC11
+        usecase "UC-12: Scan Live Gmail Mailbox\n& Flag Phishing Threats" as UC12
+        usecase "UC-13: Configure Uncertainty\nReview Thresholds" as UC13
+    }
+}
+
+' User relationships
+User --> UC01
+User --> UC02
+User --> UC03
+User --> UC04
+User --> UC05
+User --> UC06
+User --> UC07
+User --> UC11
+User --> UC12
+
+' Admin relationships
+Admin --> UC08
+Admin --> UC09
+Admin --> UC10
+Admin --> UC13
+Admin --> UC02
+Admin --> UC05
+
+' External system
+UC11 ..> GoogleIDP : <<interacts>>
+
+' Include and Extend relationships
+UC02 .> UC01 : <<include>>
+UC02 .> UC03 : <<include>>
+UC04 .> UC02 : <<extend>>
+UC06 .> UC05 : <<extend>>
+UC07 .> UC05 : <<extend>>
+UC12 .> UC11 : <<include>>
+UC12 .> UC02 : <<include>>
+UC02 .> UC09 : <<include>>
+
+note right of UC04
+  <b>Mathematical Attribution:</b>
+  Log-odds diff: log P(w|Spam) - log P(w|Ham)
+  Multiplied by TF-IDF token weight.
+end note
+
+note bottom of UC07
+  <b>Defensive Security:</b>
+  Neutralizes leading '=', '+', '-', '@'
+  with single-quote prefix escape.
+end note
+
+@enduml
+

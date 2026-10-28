@@ -38,8 +38,10 @@ data/processed/*
 !data/processed/.gitkeep
 models/*
 !models/.gitkeep
+!models/spam_pipeline.joblib
 reports/figures/*
 !reports/figures/.gitkeep
+!reports/figures/*.png
 
 # Streamlit config / cache
 .streamlit/secrets.toml

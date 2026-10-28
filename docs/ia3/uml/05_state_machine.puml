@@ -1,0 +1,101 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam handwritten false
+skinparam roundcorner 8
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI", Arial, sans-serif
+skinparam defaultFontSize 11
+skinparam stateBorderColor #334155
+skinparam stateBackgroundColor #F8FAFC
+skinparam arrowColor #1E293B
+
+title <b>SpamGuard AI — Email Scan Lifecycle State Machine Diagram</b>\n<size:10>Software Engineering IA3 Evaluation | Finite State Verification Model</size>
+
+[*] --> Idle : Application Startup\n/ Model Loaded (SHA-256 Verified)
+
+state Idle {
+    Idle : entry / Clear previous scan telemetry
+    Idle : entry / Await user action or API request
+}
+
+Idle --> InputReady : User enters text /\nselects sample /\nuploads CSV batch
+
+state InputReady {
+    InputReady : entry / Buffer email fields
+    InputReady : do / Enable 'Scan Email' button
+}
+
+InputReady --> InputReady : User edits subject or body
+InputReady --> Idle : User clicks 'Reset' / Clears form
+InputReady --> Validating : User clicks 'Scan Email' /\nAPI POST /api/predict received
+
+state Validating {
+    Validating : entry / Combine subject and body
+    Validating : do / Execute clean_text() Unicode NFKC
+    Validating : do / Check character count <= 1,000,000
+    Validating : do / Verify non-empty content
+}
+
+Validating --> ValidationError : [cleaned text is empty\nOR length > 1,000,000] /\nraise SpamGuardValidationError
+
+state ValidationError {
+    ValidationError : entry / Set error message banner
+    ValidationError : entry / Emit HTTP 422 Unprocessable Entity
+    ValidationError : do / Highlight invalid input fields
+}
+
+ValidationError --> InputReady : User modifies input text /\nDismisses alert banner
+ValidationError --> Idle : User clicks 'Reset Form'
+
+Validating --> Processing : [input is valid] /\nVerify in-memory model integrity
+
+state Processing {
+    state "Feature Extraction" as FeatExtract {
+        FeatExtract : do / TF-IDF Vectorizer transform()
+        FeatExtract : do / Generate 1 x 20,000 sparse matrix
+    }
+
+    state "Naive Bayes Inference" as NBInference {
+        NBInference : do / MultinomialNB predict_proba()
+        NBInference : do / Softmax calibrated probabilities
+        NBInference : do / Assign binary verdict (0 or 1)
+    }
+
+    state "Explainability Computation" as ExplainComp {
+        ExplainComp : do / Calculate token log-odds difference
+        ExplainComp : do / Rank Top-K feature attributions
+    }
+
+    [*] --> FeatExtract
+    FeatExtract --> NBInference : Sparse vector ready
+    NBInference --> ExplainComp : [explain == True]
+    NBInference --> [*] : [explain == False]
+    ExplainComp --> [*]
+}
+
+Processing --> ProcessingError : [Artifact missing / corrupt\nOR internal exception] /\nraise SpamGuardModelError
+
+state ProcessingError {
+    ProcessingError : entry / Log exception traceback
+    ProcessingError : entry / Emit HTTP 500 Internal Server Error
+    ProcessingError : do / Render system fallback notification
+}
+
+ProcessingError --> Idle : Administrator restores authentic artifact\n/ Server restarts
+
+Processing --> ResultAvailable : [Inference complete] /\nConstruct immutable PredictionResult
+
+state ResultAvailable {
+    ResultAvailable : entry / Render Verdict Card (Ham / Spam)
+    ResultAvailable : entry / Render Plotly Probability Gauge
+    ResultAvailable : entry / Render Token Explainability Table
+    ResultAvailable : do / Provide CSV Download (Batch mode)
+}
+
+ResultAvailable --> InputReady : User adjusts text for re-scan
+ResultAvailable --> Idle : User resets session /\nSelects new module
+ResultAvailable --> ResultAvailable : User toggles filter (All / Spam / Ham)\n[Batch Mode]
+
+@enduml
+

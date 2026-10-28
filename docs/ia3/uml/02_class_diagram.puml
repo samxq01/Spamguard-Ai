@@ -1,0 +1,196 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam handwritten false
+skinparam roundcorner 6
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI", Arial, sans-serif
+skinparam defaultFontSize 11
+skinparam classBorderColor #334155
+skinparam classHeaderBackgroundColor #F1F5F9
+skinparam classAttributeIconSize 0
+skinparam arrowColor #1E293B
+
+title <b>SpamGuard AI — Domain & Architectural Class Diagram</b>\n<size:10>Software Engineering IA3 Evaluation | Implementation-Aligned Static Model</size>
+
+package "src.predict (Core Prediction Engine)" {
+    class SpamPredictor {
+        - _pipeline: Pipeline
+        - _model_sha256: str
+        - _class_to_idx: dict[int, int]
+        - _ham_idx: int
+        - _spam_idx: int
+        - _tfidf_step: TfidfVectorizer
+        - _clf_step: MultinomialNB
+        - _vocab: dict[str, int]
+        - _inv_vocab: dict[int, str]
+        - _log_odds_diff: ndarray
+        - _model_identifier: str
+        + {static} load(model_path: Path, expected_sha: str): SpamPredictor
+        - _validate_pipeline_structure(): void
+        + prepare_input_text(subject: Any, body: Any): str
+        + predict_email(subject: Any, body: Any, explain: bool, top_k: int): PredictionResult
+        + predict_batch(texts: Sequence[str]): list[PredictionResult]
+        + explain_email(cleaned_text: str, top_k: int): list[FeatureContribution]
+        + model_sha256(): str
+        + model_identifier(): str
+    }
+
+    class FeatureContribution <<dataclass, frozen>> {
+        + token: str
+        + weight: float
+        + log_odds_diff: float
+        + contribution: float
+        + association: str
+        + to_dict(): dict[str, Any]
+    }
+
+    class PredictionResult <<dataclass, frozen>> {
+        + predicted_class: int
+        + predicted_label: str
+        + spam_probability: float
+        + ham_probability: float
+        + is_spam: bool
+        + model_identifier: str
+        + processing_time_ms: float
+        + cleaned_char_count: int
+        + top_features: list[FeatureContribution]
+        + to_dict(): dict[str, Any]
+    }
+
+    class SpamGuardError <<Exception>> {
+    }
+
+    class SpamGuardModelError <<Exception>> {
+    }
+
+    class SpamGuardValidationError <<Exception>> {
+    }
+
+    class SpamGuardBatchError <<Exception>> {
+    }
+
+    SpamGuardError <|-- SpamGuardModelError
+    SpamGuardError <|-- SpamGuardValidationError
+    SpamGuardError <|-- SpamGuardBatchError
+
+    SpamPredictor ..> PredictionResult : creates >
+    PredictionResult *-- "0..*" FeatureContribution : contains >
+    SpamPredictor ..> SpamGuardModelError : raises >
+    SpamPredictor ..> SpamGuardValidationError : raises >
+    SpamPredictor ..> SpamGuardBatchError : raises >
+}
+
+package "src.api (FastAPI REST Service)" {
+    class PredictRequest <<Pydantic BaseModel>> {
+        + subject: str = ""
+        + body: str = ""
+        + explain: bool = true
+        + top_k: int = 5
+    }
+
+    class PredictResponse <<Pydantic BaseModel>> {
+        + predicted_class: int
+        + predicted_label: str
+        + is_spam: bool
+        + spam_probability: float
+        + ham_probability: float
+        + processing_time_ms: float
+        + cleaned_char_count: int
+        + model_identifier: str
+        + top_features: list[FeatureContributionModel]
+    }
+
+    class BatchItem <<Pydantic BaseModel>> {
+        + id: Optional[str]
+        + subject: str
+        + body: str
+    }
+
+    class BatchPredictRequest <<Pydantic BaseModel>> {
+        + emails: list[BatchItem]
+        + explain: bool = false
+    }
+
+    class SystemHealthResponse <<Pydantic BaseModel>> {
+        + status: str
+        + model_available: bool
+        + model_sha256: str
+        + model_sha256_verified: bool
+        + model_identifier: str
+        + system_info: dict[str, str]
+    }
+
+    class FastAPIService <<FastAPI Application>> {
+        + health_check(): SystemHealthResponse
+        + predict(request: PredictRequest): PredictResponse
+        + predict_batch(request: BatchPredictRequest): BatchResponse
+        + predict_csv(file: UploadFile): BatchResponse
+        + get_metrics(): dict[str, Any]
+        + get_samples(): dict[str, Any]
+    }
+
+    FastAPIService ..> SpamPredictor : delegates to >
+    FastAPIService ..> PredictRequest : consumes >
+    FastAPIService ..> PredictResponse : produces >
+    FastAPIService ..> SystemHealthResponse : produces >
+}
+
+package "src.gmail (Threat Intelligence Integration)" {
+    class GmailAuthManager {
+        + client_id: str
+        + client_secret: str
+        + redirect_uri: str
+        + frontend_url: str
+        - _serializer: URLSafeTimedSerializer
+        + is_configured(): bool
+        + generate_state(): str
+        + validate_state(state: str): bool
+        + get_authorization_url(): tuple[str, str]
+        + exchange_code(code: str): dict[str, Any]
+        + create_session_token(payload: dict): str
+        + decode_session_token(token: str): Optional[dict]
+    }
+
+    class GmailClient {
+        + access_token: str
+        + list_messages(query: str, max_results: int): list[dict]
+        + get_message(message_id: str): dict[str, Any]
+    }
+
+    class GmailScanner {
+        - predictor: SpamPredictor
+        + scan_messages(messages: list[dict], threshold_low: float, threshold_high: float): GmailScanSummary
+    }
+
+    GmailScanner o-- SpamPredictor : uses >
+    GmailScanner ..> GmailClient : receives data from >
+}
+
+package "External Machine Learning Dependencies" {
+    class "sklearn.pipeline.Pipeline" as Pipeline {
+        + named_steps: dict
+        + classes_: ndarray
+        + predict(X): ndarray
+        + predict_proba(X): ndarray
+    }
+
+    class "sklearn.feature_extraction.text.TfidfVectorizer" as TfidfVectorizer {
+        + vocabulary_: dict[str, int]
+        + transform(raw_documents): csr_matrix
+    }
+
+    class "sklearn.naive_bayes.MultinomialNB" as MultinomialNB {
+        + alpha: float
+        + classes_: ndarray
+        + feature_log_prob_: ndarray
+        + predict_proba(X): ndarray
+    }
+
+    Pipeline *-- TfidfVectorizer : step "tfidf"
+    Pipeline *-- MultinomialNB : step "classifier"
+    SpamPredictor o-- Pipeline : holds frozen reference
+}
+
+@enduml
+

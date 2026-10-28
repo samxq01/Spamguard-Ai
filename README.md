@@ -1,4 +1,4 @@
-# SpamGuard AI — AI-Based Spam Email Classifier
+ # SpamGuard AI — AI-Based Spam Email Classifier
 
 > **Academic AI Micro Project** | **Domain:** Cybersecurity / Email Filtering  
 > **Course Competency Mapping:** CO2 (Algorithm Selection), CO4 (Model Engineering), CO5 (Evaluation Metrics)

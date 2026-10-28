@@ -87,7 +87,6 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const hash = window.location.hash.replace("#", "") as WorkspaceTab;
       const validTabs: WorkspaceTab[] = [
         "dashboard",
         "inbox",
@@ -98,8 +97,18 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
         "settings",
         "about",
       ];
-      if (validTabs.includes(hash)) {
-        setActiveTabState(hash);
+
+      const hash = window.location.hash.replace("#", "").toLowerCase() as WorkspaceTab;
+      const pathname = window.location.pathname.replace(/^\//, "").split("/")[0].toLowerCase() as WorkspaceTab;
+      const urlParams = new URLSearchParams(window.location.search);
+      const tabParam = urlParams.get("tab")?.toLowerCase() as WorkspaceTab;
+
+      const detected = [pathname, tabParam, hash].find(
+        (t) => t && validTabs.includes(t)
+      );
+
+      if (detected) {
+        setActiveTabState(detected);
       }
     }
   }, []);

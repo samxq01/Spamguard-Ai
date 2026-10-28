@@ -1,0 +1,93 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam handwritten false
+skinparam roundcorner 6
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI", Arial, sans-serif
+skinparam defaultFontSize 11
+skinparam sequenceArrowColor #1E293B
+skinparam sequenceLifeLineBorderColor #475569
+skinparam sequenceLifeLineBackgroundColor #F8FAFC
+skinparam sequenceParticipantBorderColor #334155
+skinparam sequenceParticipantBackgroundColor #F1F5F9
+
+title <b>SpamGuard AI — Single Email Classification Sequence Diagram</b>\n<size:10>Software Engineering IA3 Evaluation | End-to-End Execution Flow</size>
+
+autonumber
+
+actor "Security Analyst" as User
+participant "Next.js UI\n(EmailScanner.tsx)" as FE
+participant "FastAPI Service\n(src/api.py)" as API
+participant "SpamPredictor\n(src/predict.py)" as Engine
+participant "Preprocessor\n(src/preprocess.py)" as Prep
+participant "Sklearn Pipeline\n(TF-IDF + MNB)" as Pipe
+participant "Log-Odds Explainer\n(Feature Attributor)" as Expl
+
+User -> FE : Input Subject & Body (or select sample)
+activate FE
+
+User -> FE : Click "Classify Threat" / Submit
+FE -> API : POST /api/predict\n{subject, body, explain: true, top_k: 5}
+activate API
+
+API -> Engine : predict_email(subject, body, explain=True, top_k=5)
+activate Engine
+
+Engine -> Engine : combine_subject_and_body(subject, body)
+Engine -> Prep : clean_text(combined_raw_text)
+activate Prep
+Prep -> Prep : Unicode NFKC normalization
+Prep -> Prep : Lowercasing & regex token cleaning
+Prep --> Engine : cleaned_text (sanitized string)
+deactivate Prep
+
+alt Empty or Whitespace-only Input
+    Engine --> API : raise SpamGuardValidationError("Email content is empty...")
+    API --> FE : HTTP 422 Unprocessable Entity {detail: "Validation Error"}
+    FE -> User : Display alert banner: "Email content is empty"
+else Input Exceeds MAX_INPUT_CHARS (1,000,000 chars)
+    Engine --> API : raise SpamGuardValidationError("Input exceeds maximum limit...")
+    API --> FE : HTTP 422 Unprocessable Entity {detail: "Denial-of-Service Defense"}
+    FE -> User : Display security error: "Payload exceeds 1 MB safety cap"
+else Valid Input (Standard Execution Flow)
+    Engine -> Pipe : predict([cleaned_text])
+    activate Pipe
+    Pipe --> Engine : class_array = [1] (Spam)
+    
+    Engine -> Pipe : predict_proba([cleaned_text])
+    Pipe --> Engine : proba_array = [[0.015, 0.985]]
+    deactivate Pipe
+
+    Engine -> Engine : Validate probabilities (finite, sum to 1.0)
+    
+    opt explain == True
+        Engine -> Expl : explain_email(cleaned_text, top_k=5)
+        activate Expl
+        Expl -> Pipe : tfidf.transform([cleaned_text])
+        activate Pipe
+        Pipe --> Expl : sparse_tfidf_vector
+        deactivate Pipe
+        Expl -> Expl : token_contribution = weight * (log P(w|Spam) - log P(w|Ham))
+        Expl -> Expl : Sort top 5 tokens by absolute contribution
+        Expl --> Engine : list[FeatureContribution]
+        deactivate Expl
+    end
+
+    Engine -> Engine : Measure elapsed processing_time_ms
+    Engine -> Engine : Construct immutable PredictionResult
+    Engine --> API : PredictionResult(class=1, label="Spam", p_spam=0.985, ...)
+    deactivate Engine
+
+    API --> FE : HTTP 200 OK\nJSON {predicted_label: "Spam", spam_probability: 0.985, top_features: [...]}
+    deactivate API
+
+    FE -> FE : Render Threat Verdict Card (Red Phishing Banner)
+    FE -> FE : Animate Plotly Probability Gauge (98.5% Spam Risk)
+    FE -> FE : Populate Feature Contribution Table (Top influential tokens)
+    FE --> User : Display interactive threat intelligence report
+    deactivate FE
+end
+
+@enduml
+
