@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SpamGuard AI — Section 1: Working Software Project</title>
+    <style>
+
+@page {
+    size: A4;
+    margin: 18mm 16mm 18mm 16mm;
+}
+
+@media print {
+    body {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    .no-print {
+        display: none !important;
+    }
+    h1 {
+        page-break-before: always;
+    }
+    h1:first-of-type {
+        page-break-before: avoid !important;
+    }
+    h1, h2, h3, h4, h5, h6 {
+        page-break-after: avoid !important;
+        break-after: avoid-page !important;
+    }
+    table, figure, .figure-container, pre {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+    tr {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #1e293b;
+    background-color: #ffffff;
+    font-size: 9.5pt;
+    line-height: 1.58;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header & Cover Banner */
+.report-header-banner {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #1e3a8a 100%);
+    color: #ffffff;
+    padding: 24px 28px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+}
+
+.report-header-banner h1 {
+    color: #ffffff !important;
+    font-size: 20pt !important;
+    margin: 0 0 8px 0 !important;
+    border: none !important;
+    padding: 0 !important;
+    page-break-before: avoid !important;
+    letter-spacing: -0.02em;
+}
+
+.report-header-banner .subtitle {
+    color: #93c5fd;
+    font-size: 11pt;
+    font-weight: 500;
+    margin-bottom: 14px;
+}
+
+.badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.badge {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #f8fafc;
+    padding: 3px 9px;
+    border-radius: 4px;
+    font-size: 8pt;
+    font-weight: 500;
+}
+
+.badge-highlight {
+    background: #2563eb;
+    border-color: #3b82f6;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* Typography */
+h1 {
+    color: #0f172a;
+    font-size: 17pt;
+    font-weight: 700;
+    border-bottom: 2.5px solid #2563eb;
+    padding-bottom: 6px;
+    margin-top: 26px;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+}
+
+h2 {
+    color: #1e293b;
+    font-size: 13pt;
+    font-weight: 600;
+    border-bottom: 1.5px solid #e2e8f0;
+    padding-bottom: 4px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+h3 {
+    color: #334155;
+    font-size: 10.5pt;
+    font-weight: 600;
+    margin-top: 15px;
+    margin-bottom: 6px;
+}
+
+h4 {
+    color: #475569;
+    font-size: 9.5pt;
+    font-weight: 600;
+    margin-top: 12px;
+    margin-bottom: 4px;
+}
+
+p {
+    margin: 0 0 10px 0;
+    text-align: justify;
+}
+
+ul, ol {
+    margin: 0 0 12px 0;
+    padding-left: 22px;
+}
+
+li {
+    margin-bottom: 4px;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #e2e8f0;
+    margin: 18px 0;
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0 16px 0;
+    font-size: 8.5pt;
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+table th {
+    background-color: #0f172a;
+    color: #ffffff;
+    font-weight: 600;
+    text-align: left;
+    padding: 7px 9px;
+    border: 1px solid #0f172a;
+}
+
+table td {
+    padding: 6px 9px;
+    border: 1px solid #e2e8f0;
+    vertical-align: top;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: #f8fafc;
+}
+
+table tbody tr:hover {
+    background-color: #f1f5f9;
+}
+
+/* Code Blocks & Inline Code */
+pre {
+    background-color: #0f172a;
+    color: #f8fafc;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-family: "Consolas", "Cascadia Code", "Fira Code", monospace;
+    font-size: 8pt;
+    line-height: 1.45;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 12px 0;
+}
+
+code {
+    font-family: "Consolas", "Cascadia Code", monospace;
+    font-size: 8.5pt;
+    background-color: #f1f5f9;
+    color: #0f172a;
+    border: 1px solid #e2e8f0;
+    border-radius: 3px;
+    padding: 1.5px 4.5px;
+}
+
+pre code {
+    background-color: transparent;
+    color: inherit;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    font-size: 8pt;
+}
+
+/* Blockquotes */
+blockquote {
+    border-left: 4px solid #2563eb;
+    background-color: #f8fafc;
+    color: #334155;
+    margin: 12px 0;
+    padding: 8px 14px;
+    border-radius: 0 6px 6px 0;
+    font-style: normal;
+}
+
+blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+/* Figures & Images */
+.figure-container {
+    text-align: center;
+    margin: 14px 0 18px 0;
+    page-break-inside: avoid;
+}
+
+.figure-container img {
+    max-width: 94%;
+    max-height: 480px;
+    width: auto;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+}
+
+.figure-caption {
+    font-size: 8.2pt;
+    color: #475569;
+    font-weight: 500;
+    margin-top: 6px;
+    margin-bottom: 10px;
+    text-align: center;
+    font-style: italic;
+}
+
+/* Links */
+a {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Math formatting helpers */
+.math-inline {
+    font-family: "Cambria Math", "Times New Roman", serif;
+    font-style: italic;
+    color: #0f172a;
+}
+
+    </style>
+</head>
+<body>
+<h1 id="section-1-working-software-project-spamguard-ai">Section 1: Working Software Project — SpamGuard AI</h1>
+<p><strong>Evaluation:</strong> Software Engineering Internal Assessment 3 (IA3)<br />
+<strong>Academic Micro-Project:</strong> Micro Project – 05 (Semester 3)<br />
+<strong>Course Code &amp; Outcomes:</strong> AI / SE Micro-Project (CO2, CO4, CO5)<br />
+<strong>System Name:</strong> SpamGuard AI — AI-Based Spam Email Classifier<br />
+<strong>Document Classification:</strong> Section 1 Compliance Artifact &amp; Demonstration Dossier<br />
+<strong>Release Date:</strong> October 2026<br />
+<strong>Status:</strong> 100% Implemented, Verified &amp; Evaluated (Frozen Artifact SHA-256 Authenticated)  </p>
+<hr />
+<h2 id="1-problem-statement-project-objectives-and-target-users">1. Problem Statement, Project Objectives and Target Users</h2>
+<h3 id="11-problem-statement">1.1 Problem Statement</h3>
+<p>Electronic mail serves as the critical backbone of global commerce and academic communication, yet unsolicited and malicious email (spam) constitutes over 45% of total worldwide email traffic. Spam acts as the primary vector for credential phishing, malware delivery, and advance-fee financial scams. </p>
+<p>Existing email security solutions present fundamental operational limitations:
+1. <strong>Rule-Based Filters:</strong> Easily circumvented by adversarial lexical perturbations, homoglyphs, and keyword obfuscation.
+2. <strong>Cloud-Based Deep Learning (Black-Box LLMs):</strong> Introduce severe data privacy vulnerabilities by transmitting sensitive internal email text across third-party networks, incur substantial per-token API costs, and require high inference latency (&gt;1,000 ms) without mathematical explainability.
+3. <strong>Asymmetric Error Costs:</strong> In email security, a False Positive (erroneously quarantining a legitimate corporate contract or academic notice) is catastrophic, whereas a False Negative (a spam email slipping into the inbox) is a minor nuisance. Filters must strictly control the False Positive Rate (FPR) below 2.0%.</p>
+<p><strong>Problem Definition:</strong> To engineer, defensively harden, and deploy a high-throughput, locally hosted text classification system capable of separating incoming electronic mail into <strong>Ham (Legitimate, 0)</strong> and <strong>Spam (Malicious, 1)</strong> with <span class="math-inline">≥ 95\%</span> accuracy, sub-5 ms execution latency, mathematical token-level explainability, zero external cloud exposure, and strict asymmetric error control (<span class="math-inline">FPR ≤ 1.5\%</span>).</p>
+<hr />
+<h3 id="12-project-objectives">1.2 Project Objectives</h3>
+<ol>
+<li><strong>Defensive Ingestion:</strong> Ingest and parse authentic MIME messages from the official Apache SpamAssassin Public Corpus, defensively stripping directory traversals, symlink exploits, and executable attachments.</li>
+<li><strong>Leak-Free Data Splitting:</strong> Partition the normalized 5,923-email corpus using stratified random sampling (70% Train, 15% Validation, 15% Test) enforcing zero content or Message-ID leakage across partitions.</li>
+<li><strong>High-Dimensional Feature Engineering:</strong> Extract textual features using sublinear unigram/bigram TF-IDF vectorization capped at 20,000 vocabulary terms.</li>
+<li><strong>Probabilistic Optimization:</strong> Train a Multinomial Naïve Bayes classifier with hyperparameter tuning (<span class="math-inline">α = 0.1</span> Lidstone smoothing) optimized strictly against validation data.</li>
+<li><strong>Rigorous Empirical Evaluation:</strong> Evaluate the frozen model against an untouched, quarantined test partition (<span class="math-inline">n=889</span>) and benchmark against a Zero-Intelligence Majority Class baseline.</li>
+<li><strong>Mathematical Explainability by Design:</strong> Formulate token attribution based on Naïve Bayes log-odds difference, exposing the exact statistical rationale behind every verdict.</li>
+<li><strong>Defensive Software Engineering:</strong> Enforce automated input bounds (1 MB DoS limit), spreadsheet formula injection neutralization in CSV exports, and pre-inference SHA-256 cryptographic checksum gates.</li>
+<li><strong>Multi-Tier Operational Redundancy:</strong> Deploy a dual-presentation architecture combining a contemporary Next.js 16 + TypeScript workstation (port 3000), a FastAPI microservice (port 8000), and an independent Streamlit fallback dashboard (port 8501).</li>
+</ol>
+<hr />
+<h3 id="13-target-users">1.3 Target Users</h3>
+<ol>
+<li><strong>Security Operations Center (SOC) Analysts &amp; IT Administrators:</strong> Rapidly triage suspicious inbound emails, perform bulk mailbox audits, and export sanitized classification telemetry for incident response.</li>
+<li><strong>Enterprise End Users &amp; Academic Professionals:</strong> Inspect incoming messages in real time without sending private correspondence to third-party cloud AI vendors.</li>
+<li><strong>Academic Evaluators &amp; Software Auditors:</strong> Inspect model architecture, confusion matrix distributions, and deterministic reproducibility in an educational and research setting.</li>
+</ol>
+<hr />
+<h2 id="2-core-implemented-functionalities">2. Core Implemented Functionalities</h2>
+<p>SpamGuard AI is not a prototype; all core functionalities are fully implemented, frozen, and verified in the codebase:</p>
+<h3 id="21-single-email-threat-inspection-srcpredictpy-emailscannertsx-apppy">2.1 Single Email Threat Inspection (<code>src/predict.py</code>, <code>EmailScanner.tsx</code>, <code>app.py</code>)</h3>
+<ul>
+<li>User inputs Subject and Body text or selects from pre-configured synthetic samples.</li>
+<li>The system executes text normalization, combines fields, checks input boundaries, and generates class predictions.</li>
+<li><strong>Outputs:</strong> Categorical verdict banner (Emerald Safe Ham vs. Crimson Phishing Threat), calibrated posterior probabilities (<span class="math-inline">P(Ham)</span> and <span class="math-inline">P(Spam)</span>), and execution latency telemetry (typical: 1.04 ms).</li>
+</ul>
+<h3 id="22-mathematical-feature-attribution-log-odds-explainability-explain_email">2.2 Mathematical Feature Attribution / Log-Odds Explainability (<code>explain_email</code>)</h3>
+<ul>
+<li>For every evaluated message, the engine calculates the log-odds difference for all present vocabulary tokens:
+<br />
+<div style="text-align:center; padding:8px; margin:10px 0; background:#f8fafc; border:1px solid #e2e8f0; border-radius:4px; font-family:'Cambria Math', serif; font-size:10pt;"><b>Δ_odds(w) = log P(w \mid Spam) - log P(w \mid Ham)</b></div></li>
+</ul>
+<div style="text-align:center; padding:8px; margin:10px 0; background:#f8fafc; border:1px solid #e2e8f0; border-radius:4px; font-family:'Cambria Math', serif; font-size:10pt;"><b>Contribution(w) = TF-IDF(w) × Δ_odds(w)</b></div>
+<ul>
+<li>Ranks the top <span class="math-inline">k</span> influential tokens and categorizes each as <strong>Spam-leaning</strong> (<span class="math-inline">Δ &gt; 0</span>) or <strong>Ham-leaning</strong> (<span class="math-inline">Δ ≤ 0</span>), rendered in an interactive polarity table.</li>
+</ul>
+<h3 id="23-high-throughput-vectorized-batch-csv-scanner-batchscannertsx-srcpredictpy">2.3 High-Throughput Vectorized Batch CSV Scanner (<code>BatchScanner.tsx</code>, <code>src/predict.py</code>)</h3>
+<ul>
+<li>Accepts standard CSV file uploads containing up to 10,000 email records.</li>
+<li>Automatically detects schema (<code>subject,body</code> or <code>text</code>).</li>
+<li>Utilizes vectorized array processing exceeding 12,000 emails/second.</li>
+<li>Provides dynamic filtering by verdict (<code>All</code>, <code>Spam Only</code>, <code>Ham Only</code>, <code>Needs Review</code>).</li>
+</ul>
+<h3 id="24-spreadsheet-formula-injection-defense-sanitize_csv_cell">2.4 Spreadsheet Formula Injection Defense (<code>sanitize_csv_cell</code>)</h3>
+<ul>
+<li>Neutralizes active formula injection characters (<code>=</code>, <code>+</code>, <code>-</code>, <code>@</code>, <code>\t</code>, <code>\r</code>, <code>\n</code>) in exportable CSVs by automatically prepending an escape single-quote (<code>'</code>), preventing remote code execution in Microsoft Excel and LibreOffice Calc.</li>
+</ul>
+<h3 id="25-model-performance-analytics-verification-dashboard-modelanalyticstsx-apppy">2.5 Model Performance Analytics &amp; Verification Dashboard (<code>ModelAnalytics.tsx</code>, <code>app.py</code>)</h3>
+<ul>
+<li>Displays authentic held-out test evaluation figures: Accuracy (97.30%), Spam Precision (97.33%), Spam Recall (93.75%), Spam F1 (95.51%), and ROC-AUC (0.9965).</li>
+<li>Displays interactive Confusion Matrix heatmap (<span class="math-inline">TN=610, FP=7, FN=17, TP=255</span>) and empirical comparisons against the zero-intelligence majority class baseline.</li>
+</ul>
+<h3 id="26-restful-microservice-health-monitoring-srcapipy">2.6 RESTful Microservice &amp; Health Monitoring (<code>src/api.py</code>)</h3>
+<ul>
+<li>Exposes typed Pydantic endpoints (<code>/api/health</code>, <code>/api/predict</code>, <code>/api/predict/batch</code>, <code>/api/predict/csv</code>, <code>/api/metrics</code>, <code>/api/samples</code>).</li>
+<li><code>/api/health</code> performs a live SHA-256 checksum check of the serialized model on disk, verifying artifact authenticity on every poll.</li>
+</ul>
+<h3 id="27-gmail-threat-intelligence-integration-srcgmail">2.7 Gmail Threat Intelligence Integration (<code>src/gmail/</code>)</h3>
+<ul>
+<li>Integrates Google OAuth 2.0 with minimal read-only scopes (<code>gmail.readonly</code>).</li>
+<li>Scans recent inbox emails, classifies threats, and highlights messages falling into configurable uncertainty margin review bands.</li>
+</ul>
+<hr />
+<h2 id="3-system-architecture-module-interaction">3. System Architecture &amp; Module Interaction</h2>
+<p>SpamGuard AI employs a decoupled, multi-tier architectural layout where presentation, API routing, inference logic, and model storage are strictly isolated:</p>
+<pre><code>+-----------------------------------------------------------------------------------+
+|                           CLIENT PRESENTATION TIER                                |
+|   +-------------------------------------+   +---------------------------------+   |
+|   |  Primary Web Workstation            |   |  Standalone Fallback Dashboard  |   |
+|   |  Next.js 16 + TypeScript            |   |  Streamlit 1.66 + Plotly        |   |
+|   |  Port 3000 (Editorial Anthracite)  |   |  Port 8501 (Resilient UI)       |   |
+|   +-------------------------------------+   +---------------------------------+   |
++-----------------------------------------------------------------------------------+
+                     |                                       |
+        HTTP/JSON API Proxy                                  |
+                     v                                       |
++--------------------------------------------------+         |
+|             SERVICE &amp; API TIER                   |         |
+|   FastAPI REST Microservice (Port 8000)          |         |
+|   src/api.py — Pydantic Schemas &amp; Routes         |         |
++--------------------------------------------------+         |
+                     |                                       |
+          In-Process Python Binding                          |
+                     v                                       v
++-----------------------------------------------------------------------------------+
+|                     CORE PREDICTION &amp; SECURITY ENGINE                             |
+|   src/predict.py (SpamPredictor Engine, Preprocessor, Log-Odds Attributor)       |
++-----------------------------------------------------------------------------------+
+                     |
+       Cryptographic SHA-256 Gate (Hash: c652119c99f0...)
+                     v
++-----------------------------------------------------------------------------------+
+|                       FROZEN MODEL ARTIFACT TIER                                  |
+|   models/spam_pipeline.joblib (1.15 MB, Frozen Pipeline)                          |
+|   Step 1: TF-IDF (20,000 Unigrams/Bigrams) | Step 2: MultinomialNB (alpha = 0.1)  |
++-----------------------------------------------------------------------------------+
+</code></pre>
+<h3 id="module-breakdown-responsibility">Module Breakdown &amp; Responsibility:</h3>
+<ol>
+<li><code>src/config.py</code>: Centralized path management, hyperparameter constants, and cryptographic hash definitions.</li>
+<li><code>src/preprocess.py</code>: Unicode NFKC text cleaning, punctuation sanitization, and stratified train/validation/test partitioning.</li>
+<li><code>src/predict.py</code>: The <code>SpamPredictor</code> class, pre-inference SHA-256 verification gate, vectorized batch inference, log-odds feature attribution, and CSV cell sanitization.</li>
+<li><code>src/api.py</code>: FastAPI application exposing RESTful JSON endpoints, handling CORS, file uploads, and session management.</li>
+<li><code>frontend/</code>: Next.js 16 single-page web app with Tailwind CSS, Lucide icons, responsive drawer navigation, and proxy rewrites to port 8000.</li>
+<li><code>app.py</code>: Standalone Streamlit application providing complete offline redundancy on port 8501.</li>
+</ol>
+<hr />
+<h2 id="4-input-validation-and-defensive-error-handling">4. Input Validation and Defensive Error Handling</h2>
+<p>SpamGuard AI adheres to defense-in-depth security principles across all tiers:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Defense Mechanism</th>
+<th style="text-align: left;">Target Vulnerability</th>
+<th style="text-align: left;">Implemented Mitigation</th>
+<th style="text-align: left;">Handled Response</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Empty Input Check</strong></td>
+<td style="text-align: left;">Model crashes on empty/null vectors</td>
+<td style="text-align: left;">Checks cleaned string length; asserts non-empty printable characters.</td>
+<td style="text-align: left;">Raises <code>SpamGuardValidationError</code>, returns HTTP 422 with banner alert.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Payload Size Capping</strong></td>
+<td style="text-align: left;">Denial of Service (DoS) via regex/RAM exhaustion</td>
+<td style="text-align: left;">Enforces <code>MAX_INPUT_CHARS = 1,000,000</code> (1 MB) safety limit per email.</td>
+<td style="text-align: left;">Rejects with <code>SpamGuardValidationError</code> and HTTP 422 warning.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Batch Row Limiting</strong></td>
+<td style="text-align: left;">Server out-of-memory via massive CSV uploads</td>
+<td style="text-align: left;">Enforces <code>MAX_BATCH_SIZE = 10,000</code> records per batch.</td>
+<td style="text-align: left;">Rejects with <code>SpamGuardBatchError</code> and descriptive row count error.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>CSV Schema Validation</strong></td>
+<td style="text-align: left;">Malformed data injection</td>
+<td style="text-align: left;">Inspects header row for <code>('subject', 'body')</code> or <code>'text'</code>.</td>
+<td style="text-align: left;">Rejects upload with clear column mapping guide.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Formula Injection Defense</strong></td>
+<td style="text-align: left;">OWASP CSV Injection in Microsoft Excel</td>
+<td style="text-align: left;"><code>sanitize_csv_cell()</code> prepends <code>'</code> to leading <code>=</code>, <code>+</code>, <code>-</code>, <code>@</code>, <code>\t</code>, <code>\r</code>, <code>\n</code>.</td>
+<td style="text-align: left;">Neutralized formula text exported safely.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Cryptographic Integrity Gate</strong></td>
+<td style="text-align: left;">Model poisoning or corrupted model file</td>
+<td style="text-align: left;">Compares <code>models/spam_pipeline.joblib</code> SHA-256 against expected hash.</td>
+<td style="text-align: left;">Rejects startup with <code>SpamGuardModelError</code> if hash differs.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>OAuth Anti-CSRF Token</strong></td>
+<td style="text-align: left;">Cross-Site Request Forgery in OAuth callbacks</td>
+<td style="text-align: left;">HMAC SHA-256 signed, 15-minute expiring state tokens via <code>URLSafeTimedSerializer</code>.</td>
+<td style="text-align: left;">Drops callback if state signature is invalid.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Negative OAuth Scopes</strong></td>
+<td style="text-align: left;">Excessive third-party mailbox privileges</td>
+<td style="text-align: left;">Strict security invariant: ONLY <code>gmail.readonly</code> requested. NO write/delete.</td>
+<td style="text-align: left;">Tested by automated negative scope tests.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Zero Mail Storage Policy</strong></td>
+<td style="text-align: left;">Confidential data leakage / GDPR compliance</td>
+<td style="text-align: left;">All text kept in volatile RAM during inference; zero persistence to disk or logs.</td>
+<td style="text-align: left;">Guarantees complete data privacy.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="5-sample-inputs-and-demonstration-data">5. Sample Inputs and Demonstration Data</h2>
+<p>The following curated test inputs are provided to verify the application live during the IA3 evaluation:</p>
+<h3 id="sample-1-financial-wire-advance-fee-phishing-obvious-spam">Sample 1: Financial Wire / Advance-Fee Phishing (Obvious Spam)</h3>
+<ul>
+<li><strong>Category:</strong> Spam / Phishing Threat</li>
+<li><strong>Subject:</strong> <code>URGENT: Claim your $1,000,000 lottery cash prize winning immediately!</code></li>
+<li><strong>Body:</strong>
+  ```text
+  Dear Lucky Winner,</li>
+</ul>
+<p>Your email address was officially selected in our international lottery promotion. 
+  To claim your guaranteed $1,000,000 bank wire transfer, click the link below and submit your banking account details and full identification.</p>
+<p>Failure to reply within 24 hours will forfeit your prize.
+  <code>``
+- **Expected Outcome:** Red Threat Verdict (</code>Spam<code>); Spam Probability &lt;span class="math-inline"&gt;&gt; 99.5\%&lt;/span&gt;; Top features:</code>"prize"<code>,</code>"guaranteed"<code>,</code>"lottery"` marked as Spam-leaning.</p>
+<hr />
+<h3 id="sample-2-corporate-systems-engineering-sync-authentic-ham">Sample 2: Corporate Systems Engineering Sync (Authentic Ham)</h3>
+<ul>
+<li><strong>Category:</strong> Legitimate (Ham)</li>
+<li><strong>Subject:</strong> <code>Weekly Engineering Team Sync — Agenda &amp; Action Items</code></li>
+<li><strong>Body:</strong>
+  ```text
+  Hi team,</li>
+</ul>
+<p>Please find attached the agenda for our weekly sprint review tomorrow at 10:00 AM in Conference Room B. 
+  We will review the pull requests for the authentication refactor and discuss the test coverage metrics. Let me know if you have additional items to add.</p>
+<p>Best regards,
+  Lead Systems Engineer
+  <code>``
+- **Expected Outcome:** Emerald Safe Verdict (</code>Ham<code>); Ham Probability &lt;span class="math-inline"&gt;&gt; 99.0\%&lt;/span&gt;; Spam Probability &lt;span class="math-inline"&gt;&lt; 1.0\%&lt;/span&gt;; Top features:</code>"attached"<code>,</code>"review"<code>,</code>"team"` marked as Ham-leaning.</p>
+<hr />
+<h3 id="sample-3-academic-evaluation-notification-authentic-ham">Sample 3: Academic Evaluation Notification (Authentic Ham)</h3>
+<ul>
+<li><strong>Category:</strong> Legitimate (Ham)</li>
+<li><strong>Subject:</strong> <code>Software Engineering IA3 Evaluation Schedule — Committee Review Agenda</code></li>
+<li><strong>Body:</strong>
+  ```text
+  Dear Students and Project Mentors,</li>
+</ul>
+<p>This is to confirm that the Software Engineering IA3 project evaluations will take place tomorrow starting at 10:30 AM in Computing Lab 4. 
+  Please ensure your local environment is active, all test cases are executed, and the SRS document is ready for review.</p>
+<p>Best regards,
+  Project Evaluation Coordinator
+  <code>``
+- **Expected Outcome:** Emerald Safe Verdict (</code>Ham`); Ham Probability <span class="math-inline">&gt; 98.5\%</span>; Spam Probability <span class="math-inline">&lt; 1.5\%</span>.</p>
+<hr />
+<h3 id="sample-4-batch-csv-demonstration-data-with-formula-injection-test">Sample 4: Batch CSV Demonstration Data (with Formula Injection Test)</h3>
+<p>Create a demonstration file <code>demo_batch.csv</code> with the following content:</p>
+<pre><code class="language-csv">subject,body
+Project Status Update,The deployment completed successfully on staging servers.
+FREE CASH PRIZE,Earn thousands from home with zero investment required guaranteed!
+Client Meeting Notes,Attached is the summary from yesterday's product roadmap call.
+=SUM(A1:A10),+cmd|' /C calc'!A0
+Academic Research Paper,Please review the draft submission for the upcoming AI conference.
+</code></pre>
+<ul>
+<li><strong>Expected Outcome:</strong></li>
+<li>Ingests all 5 records; identifies 2 Spam, 2 Ham, 1 Formula Row.</li>
+<li>Exported CSV neutralizes row 4 into <code>'=SUM(A1:A10)</code> and <code>'+cmd|' /C calc'!A0</code>.</li>
+</ul>
+<hr />
+<h2 id="6-setup-and-execution-instructions-windows-environment">6. Setup and Execution Instructions (Windows Environment)</h2>
+<h3 id="61-prerequisites">6.1 Prerequisites</h3>
+<ul>
+<li><strong>Python 3.12.x</strong> with virtual environment located at <code>.venv</code>.</li>
+<li><strong>Node.js v18+ / v20+</strong> with npm installed.</li>
+<li>PowerShell or Windows Command Prompt.</li>
+</ul>
+<h3 id="62-pre-flight-model-verification">6.2 Pre-Flight Model Verification</h3>
+<pre><code class="language-powershell">cd &quot;e:\Sem 3\AI\mp\SpamGuard-AI-Handoff\AI_mp&quot;
+.\.venv\Scripts\python.exe -c &quot;import hashlib, pathlib; p = pathlib.Path('models/spam_pipeline.joblib'); print('Model SHA-256:', hashlib.sha256(p.read_bytes()).hexdigest())&quot;
+</code></pre>
+<p><strong>Expected Output:</strong></p>
+<pre><code class="language-text">Model SHA-256: c652119c99f0db2abe0788969d002818478bb63be95e31e5f337eda8da6ddbb0
+</code></pre>
+<hr />
+<h3 id="63-executing-the-complete-automated-test-suite-157-passing-tests">6.3 Executing the Complete Automated Test Suite (157 Passing Tests)</h3>
+<p>To demonstrate software quality assurance to the committee, run both automated test runners:</p>
+<h4 id="1-python-pytest-suite-152-tests">1. Python Pytest Suite (152 Tests):</h4>
+<pre><code class="language-powershell">.\.venv\Scripts\python.exe -m pytest -v
+</code></pre>
+<p><em>Result: 152 passed in <span class="math-inline">≈ 10.92</span> seconds.</em></p>
+<h4 id="2-nodejs-frontend-contract-suite-5-tests">2. Node.js Frontend Contract Suite (5 Tests):</h4>
+<pre><code class="language-powershell">npm test --prefix frontend
+</code></pre>
+<p><em>Result: 5 passed in <span class="math-inline">≈ 0.07</span> seconds.</em></p>
+<hr />
+<h3 id="64-launching-the-multi-tier-application">6.4 Launching the Multi-Tier Application</h3>
+<p>Open <strong>three separate PowerShell terminals</strong> in the project root:</p>
+<h4 id="terminal-1-start-fastapi-microservice-port-8000">Terminal 1 — Start FastAPI Microservice (Port 8000)</h4>
+<pre><code class="language-powershell">cd &quot;e:\Sem 3\AI\mp\SpamGuard-AI-Handoff\AI_mp&quot;
+.\.venv\Scripts\Activate.ps1
+uvicorn src.api:app --host 127.0.0.1 --port 8000 --reload
+</code></pre>
+<p><em>Running on: <code>http://127.0.0.1:8000</code></em></p>
+<h4 id="terminal-2-start-nextjs-modern-frontend-port-3000">Terminal 2 — Start Next.js Modern Frontend (Port 3000)</h4>
+<pre><code class="language-powershell">cd &quot;e:\Sem 3\AI\mp\SpamGuard-AI-Handoff\AI_mp\frontend&quot;
+npm run dev
+</code></pre>
+<p><em>Running on: <code>http://localhost:3000</code></em></p>
+<h4 id="terminal-3-start-streamlit-resilient-fallback-port-8501">Terminal 3 — Start Streamlit Resilient Fallback (Port 8501)</h4>
+<pre><code class="language-powershell">cd &quot;e:\Sem 3\AI\mp\SpamGuard-AI-Handoff\AI_mp&quot;
+.\.venv\Scripts\streamlit.exe run app.py --server.port 8501
+</code></pre>
+<p><em>Running on: <code>http://localhost:8501</code></em></p>
+<hr />
+<h2 id="7-step-by-step-ia3-evaluation-demonstration-guide">7. Step-by-Step IA3 Evaluation Demonstration Guide</h2>
+<p>Follow this 5-step walkthrough during the live examination:</p>
+<pre><code class="language-mermaid">flowchart LR
+    Step1[&quot;Step 1:&lt;br/&gt;Integrity &amp; API Health&lt;br/&gt;(:8000/api/health)&quot;] --&gt; Step2[&quot;Step 2:&lt;br/&gt;Single Threat Scan&lt;br/&gt;(:3000/#detect)&quot;]
+    Step2 --&gt; Step3[&quot;Step 3:&lt;br/&gt;Explainability&lt;br/&gt;(Log-Odds Table)&quot;]
+    Step3 --&gt; Step4[&quot;Step 4:&lt;br/&gt;Batch CSV Scan &amp;&lt;br/&gt;Formula Injection Defense&quot;]
+    Step4 --&gt; Step5[&quot;Step 5:&lt;br/&gt;Model Analytics &amp;&lt;br/&gt;Confusion Matrix Review&quot;]
+</code></pre>
+<ol>
+<li><strong>Step 1: Verify API Health &amp; Checksum:</strong></li>
+<li>In your browser, open <code>http://localhost:8000/api/health</code>.</li>
+<li>Point out that status is <code>OPERATIONAL</code> and <code>model_sha256_verified</code> is <code>true</code>.</li>
+<li><strong>Step 2: Demonstrate Single Email Threat Scanner:</strong></li>
+<li>Open <code>http://localhost:3000/#detect</code>.</li>
+<li>Paste <strong>Sample 1 (Lottery Phishing)</strong> and click <strong>"Scan Email"</strong>.</li>
+<li>Show the Red Phishing Verdict, probability gauge (<span class="math-inline">99.8\%</span>), and sub-2ms latency.</li>
+<li>Paste <strong>Sample 2 (Engineering Sync)</strong> and click <strong>"Scan Email"</strong>.</li>
+<li>Show the Emerald Safe Verdict, probability gauge (<span class="math-inline">99.7\%</span> Ham).</li>
+<li><strong>Step 3: Demonstrate Explainability:</strong></li>
+<li>Point out the <strong>Feature Contribution Table</strong> under the scan result.</li>
+<li>Show how the model mathematically exposes individual token weights and log-odds impacts (<span class="math-inline">Δ_{odds = \log P(w|Spam) - \log P(w|Ham)</span>).</li>
+<li><strong>Step 4: Demonstrate Batch CSV Classification &amp; Formula Defense:</strong></li>
+<li>Navigate to <code>http://localhost:3000/#batch</code>.</li>
+<li>Upload <code>demo_batch.csv</code> and click <strong>"Scan Entire Batch"</strong>.</li>
+<li>Show the instant batch classification summary cards and dynamic verdict filters (<code>All</code>, <code>Spam</code>, <code>Ham</code>).</li>
+<li>Click <strong>"Export Clean Results (CSV)"</strong> and show that <code>=SUM(...)</code> was neutralized to <code>'=SUM(...)</code>.</li>
+<li><strong>Step 5: Review Model Performance Analytics:</strong></li>
+<li>Navigate to <code>http://localhost:3000/#analytics</code>.</li>
+<li>Present the empirical held-out test metrics: <strong>97.30% Accuracy</strong>, <strong>97.33% Precision</strong>, <strong>1.13% FPR</strong>, and the <strong>Confusion Matrix</strong> (<span class="math-inline">TN=610, FP=7, FN=17, TP=255</span>) compared to the baseline.</li>
+<li><strong>Step 6: Demonstrate Fallback Redundancy:</strong></li>
+<li>Open <code>http://localhost:8501</code> to demonstrate that the Streamlit application operates independently as a zero-dependency fallback.</li>
+</ol>
+</body>
+</html>

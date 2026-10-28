@@ -61,7 +61,7 @@ This micro-project presents **SpamGuard AI**, an interpretable, production-ready
 
 To ensure complete scientific validity, the dataset was partitioned into stratified, strictly leak-free subsets: 70% Train ($n=4,145$), 15% Validation ($n=889$), and 15% Test ($n=889$). On the quarantined, untouched test partition, SpamGuard AI achieved an overall **Accuracy of 97.30%**, **Spam Precision of 97.33%**, **Spam Recall of 93.75%**, **Spam F1-Score of 95.51%**, and an **Area Under the ROC Curve (ROC-AUC) of 0.9965**, with an exceptionally low **False Positive Rate of 1.13%** (7 false positives out of 617 legitimate emails). 
 
-The system is deployed as an interactive, multi-section web application built with Streamlit, featuring real-time single-email threat inspection, mathematical token-level log-odds explainability, vectorized batch CSV processing exceeding 10,000 emails/second, and automated CSV formula injection neutralization. The entire codebase is fortified by 123 automated Pytest test cases passing with a 100% success rate.
+The system is deployed as an interactive, multi-section web application built with Streamlit and modern Next.js + FastAPI architectures, featuring real-time single-email threat inspection, mathematical token-level log-odds explainability, vectorized batch CSV processing exceeding 10,000 emails/second, and automated CSV formula injection neutralization. The entire codebase is fortified by 157 automated test cases (152 Pytest automated suites + 5 Node.js verification tests) passing with a 100% success rate.
 
 ---
 
@@ -218,19 +218,39 @@ Five standard archives were ingested over secure HTTPS:
 
 Implemented in `src/analyze_data.py`, Phase 03 conducted an exhaustive descriptive audit without fitting any predictive models.
 
+![Class Imbalance Distribution](../reports/figures/class_distribution.png)
+*Figure 1: Stratified Class Distribution across Corpus (69.37% Ham vs. 30.63% Spam)*
+
 ### Key Statistical Insights
 1. **Class Distribution:** 4,109 Ham vs. 1,814 Spam establishes an imbalance ratio of **2.27 : 1**, necessitating precision-recall evaluation over naive accuracy.
 2. **Text Length Distributions:**
    - *Spam:* Mean = 2,466.1 characters, Median = 1,226.0 characters, Mean Words = 320.8.
    - *Ham:* Mean = 1,885.2 characters, Median = 1,022.0 characters, Mean Words = 273.7.
    - Spam messages exhibit higher median lengths due to tracking tokens, HTML styling tags, and promotional disclaimers.
+
+![Email Length Distribution](../reports/figures/email_length_distribution.png)
+*Figure 2: Distribution of Email Character Lengths across Dataset*
+
+![Length Comparison by Class](../reports/figures/length_comparison.png)
+*Figure 3: Message Character Length Comparison between Ham and Spam Classes*
+
 3. **Punctuation & Urgency Markers:**
    - Exclamation marks (`!`) appear in **78.61% of spam emails** (mean: 5.84/email) compared to only **33.56% of ham emails** (mean: 0.86/email).
 4. **Structural Lexical Indicators (URLs & Digits):**
    - URLs are present in **85.08% of ham emails** and **56.34% of spam emails**. In developer mailing-list datasets, legitimate emails routinely append subscription, archive, and repository URLs in footers, demonstrating that "URLs imply spam" is a flawed heuristic.
+
+![URL Pattern Comparison](../reports/figures/url_pattern_comparison.png)
+*Figure 4: Frequency and Proportion of URLs in Ham vs. Spam Messages*
+
 5. **Top Discriminative Vocabulary (Non-Stop-Words):**
    - *Spam:* `font`, `email`, `free`, `click`, `money`, `business`, `mail`, `guarantee`, `cash`.
    - *Ham:* `list`, `linux`, `users`, `lists`, `rpm`, `redhat`, `freshrpms`, `patch`.
+
+![Top Spam Words](../reports/figures/top_spam_words.png)
+*Figure 5: Top 20 Most Discriminative Terms for Spam Email Class*
+
+![Top Ham Words](../reports/figures/top_ham_words.png)
+*Figure 6: Top 20 Most Discriminative Terms for Legitimate (Ham) Class*
 
 ---
 
@@ -305,6 +325,9 @@ To prove the failure of accuracy-only metrics on imbalanced datasets, a majority
 | **Majority Baseline** | 69.29% | 0.00% | 0.00% | 0.0000 |
 | **Multinomial Naïve Bayes ($\alpha=0.1$)** | **97.86%** | **98.85%** | **94.14%** | **0.9644** |
 
+![Model vs Baseline Comparison](../reports/figures/test_model_vs_baseline.png)
+*Figure 7: Multinomial Naïve Bayes Model vs. Majority-Class Baseline on Validation Partition*
+
 *Finding:* The majority baseline achieved nearly 70% accuracy while failing to intercept a single spam email, confirming the critical necessity of Precision, Recall, and F1 metrics.
 
 ### 15.2 Validation Tuning Curve
@@ -346,6 +369,15 @@ Implemented in `src/evaluate.py`, Phase 06 evaluated the frozen pipeline artifac
 | **ROC-AUC** | $\int \text{TPR} \, d(\text{FPR})$ | **0.9965** | 0.5000 | +0.4965 |
 | **Average Precision (PR-AUC)** | $\sum (R_k - R_{k-1}) P_k$ | **0.9926** | 0.3060 | +0.6866 |
 
+![Test Classification Metrics](../reports/figures/test_classification_metrics.png)
+*Figure 8: Empirical Test Set Classification Metrics Summary*
+
+![ROC Curve](../reports/figures/test_roc_curve.png)
+*Figure 9: Receiver Operating Characteristic (ROC) Curve (AUC = 0.9965)*
+
+![Precision Recall Curve](../reports/figures/test_precision_recall_curve.png)
+*Figure 10: Precision-Recall Curve (Average Precision = 0.9926)*
+
 ### 16.2 Generalization Stability (Validation vs. Test)
 
 | Metric | Validation (Phase 05) | Test (Phase 06) | Generalization Delta | Generalization Status |
@@ -370,6 +402,9 @@ ACTUAL    Ham (0)    610 (TN)          7 (FP)        617
 CLASS     Spam (1)    17 (FN)        255 (TP)        272
           Total      627             262             889
 ```
+
+![Test Confusion Matrix Heatmap](../reports/figures/test_confusion_matrix.png)
+*Figure 11: Held-Out Test Set Confusion Matrix Heatmap (n=889)*
 
 ### 17.2 Mathematical Error Rate Calculations
 - **False Positive Rate (Type I Error Rate):**
@@ -488,7 +523,7 @@ The empirical evaluation of SpamGuard AI demonstrates that a properly regularize
 
 **SpamGuard AI — AI-Based Spam Email Classifier** demonstrates a complete, academically rigorous, and production-ready machine learning system. By uniting sublinear TF-IDF n-gram vectorization with Lidstone-smoothed Multinomial Naïve Bayes, the project achieves an outstanding balance between statistical accuracy (**97.30%**), spam precision (**97.33%**), discrimination power (**0.9965 ROC-AUC**), and operational throughput (**>10,000 emails/second**).
 
-The project successfully fulfills all academic microproject requirements, demonstrating full mastery of **CO2 (Algorithm Selection)**, **CO4 (Model Engineering)**, and **CO5 (Evaluation Metrics)**, accompanied by 123 automated test cases, complete leakage prevention, and transparent academic disclosures.
+The project successfully fulfills all academic microproject requirements, demonstrating full mastery of **CO2 (Algorithm Selection)**, **CO4 (Model Engineering)**, and **CO5 (Evaluation Metrics)**, accompanied by 157 automated test cases, complete leakage prevention, and transparent academic disclosures.
 
 ---
 
@@ -516,6 +551,30 @@ The project successfully fulfills all academic microproject requirements, demons
   `587102a5400814ae8107539f8a0bcc7307661e752e6fc622ce6c56f854bfea1b` (889 rows)
 
 ### Appendix B: Test Suite Summary
-- **Total Test Cases:** 123
-- **Passed:** 123 | **Failed:** 0 | **Pass Rate:** 100.0%
-- **Execution Time:** ~11.08 seconds across 9 test suites
+- **Total Test Cases:** 157 (152 Pytest automated backend/pipeline/UI tests + 5 Node.js verification tests)
+- **Passed:** 157 | **Failed:** 0 | **Pass Rate:** 100.0%
+- **Execution Time:** ~12.4 seconds across 10 test suites
+- **Coverage:** Ingestion, preprocessing, model serialization, inference, explainability, CSV formula injection defense, UI caching, FastAPI endpoints, and Next.js routing.
+
+### Appendix C: UML Architectural Diagrams
+The system's structural and behavioural design is formally captured across five standard UML diagrams:
+
+#### C.1 Use Case Diagram
+![Use Case Diagram](ia3/uml/01_use_case.png)
+*Figure 12: UML Use Case Diagram — System actors, boundaries, and primary interactions.*
+
+#### C.2 Class Diagram
+![Class Diagram](ia3/uml/02_class_diagram.png)
+*Figure 13: UML Class Diagram — Data structures, pipelines, and predictor domain models.*
+
+#### C.3 Sequence Diagram
+![Sequence Diagram](ia3/uml/03_sequence_diagram.png)
+*Figure 14: UML Sequence Diagram — Execution flow during single email classification and attribution.*
+
+#### C.4 Activity Diagram
+![Activity Diagram](ia3/uml/04_activity_diagram.png)
+*Figure 15: UML Activity Diagram — Ingestion, text sanitization, inference, and formula defense.*
+
+#### C.5 State Machine Diagram
+![State Machine Diagram](ia3/uml/05_state_machine.png)
+*Figure 16: UML State Machine Diagram — Application operational states and transition triggers.*

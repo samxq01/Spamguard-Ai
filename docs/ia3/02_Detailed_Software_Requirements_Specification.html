@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SpamGuard AI — Section 2: Detailed Software Requirements Specification (SRS)</title>
+    <style>
+
+@page {
+    size: A4;
+    margin: 18mm 16mm 18mm 16mm;
+}
+
+@media print {
+    body {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    .no-print {
+        display: none !important;
+    }
+    h1 {
+        page-break-before: always;
+    }
+    h1:first-of-type {
+        page-break-before: avoid !important;
+    }
+    h1, h2, h3, h4, h5, h6 {
+        page-break-after: avoid !important;
+        break-after: avoid-page !important;
+    }
+    table, figure, .figure-container, pre {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+    tr {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #1e293b;
+    background-color: #ffffff;
+    font-size: 9.5pt;
+    line-height: 1.58;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header & Cover Banner */
+.report-header-banner {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #1e3a8a 100%);
+    color: #ffffff;
+    padding: 24px 28px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+}
+
+.report-header-banner h1 {
+    color: #ffffff !important;
+    font-size: 20pt !important;
+    margin: 0 0 8px 0 !important;
+    border: none !important;
+    padding: 0 !important;
+    page-break-before: avoid !important;
+    letter-spacing: -0.02em;
+}
+
+.report-header-banner .subtitle {
+    color: #93c5fd;
+    font-size: 11pt;
+    font-weight: 500;
+    margin-bottom: 14px;
+}
+
+.badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.badge {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #f8fafc;
+    padding: 3px 9px;
+    border-radius: 4px;
+    font-size: 8pt;
+    font-weight: 500;
+}
+
+.badge-highlight {
+    background: #2563eb;
+    border-color: #3b82f6;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* Typography */
+h1 {
+    color: #0f172a;
+    font-size: 17pt;
+    font-weight: 700;
+    border-bottom: 2.5px solid #2563eb;
+    padding-bottom: 6px;
+    margin-top: 26px;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+}
+
+h2 {
+    color: #1e293b;
+    font-size: 13pt;
+    font-weight: 600;
+    border-bottom: 1.5px solid #e2e8f0;
+    padding-bottom: 4px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+h3 {
+    color: #334155;
+    font-size: 10.5pt;
+    font-weight: 600;
+    margin-top: 15px;
+    margin-bottom: 6px;
+}
+
+h4 {
+    color: #475569;
+    font-size: 9.5pt;
+    font-weight: 600;
+    margin-top: 12px;
+    margin-bottom: 4px;
+}
+
+p {
+    margin: 0 0 10px 0;
+    text-align: justify;
+}
+
+ul, ol {
+    margin: 0 0 12px 0;
+    padding-left: 22px;
+}
+
+li {
+    margin-bottom: 4px;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #e2e8f0;
+    margin: 18px 0;
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0 16px 0;
+    font-size: 8.5pt;
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+table th {
+    background-color: #0f172a;
+    color: #ffffff;
+    font-weight: 600;
+    text-align: left;
+    padding: 7px 9px;
+    border: 1px solid #0f172a;
+}
+
+table td {
+    padding: 6px 9px;
+    border: 1px solid #e2e8f0;
+    vertical-align: top;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: #f8fafc;
+}
+
+table tbody tr:hover {
+    background-color: #f1f5f9;
+}
+
+/* Code Blocks & Inline Code */
+pre {
+    background-color: #0f172a;
+    color: #f8fafc;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-family: "Consolas", "Cascadia Code", "Fira Code", monospace;
+    font-size: 8pt;
+    line-height: 1.45;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 12px 0;
+}
+
+code {
+    font-family: "Consolas", "Cascadia Code", monospace;
+    font-size: 8.5pt;
+    background-color: #f1f5f9;
+    color: #0f172a;
+    border: 1px solid #e2e8f0;
+    border-radius: 3px;
+    padding: 1.5px 4.5px;
+}
+
+pre code {
+    background-color: transparent;
+    color: inherit;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    font-size: 8pt;
+}
+
+/* Blockquotes */
+blockquote {
+    border-left: 4px solid #2563eb;
+    background-color: #f8fafc;
+    color: #334155;
+    margin: 12px 0;
+    padding: 8px 14px;
+    border-radius: 0 6px 6px 0;
+    font-style: normal;
+}
+
+blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+/* Figures & Images */
+.figure-container {
+    text-align: center;
+    margin: 14px 0 18px 0;
+    page-break-inside: avoid;
+}
+
+.figure-container img {
+    max-width: 94%;
+    max-height: 480px;
+    width: auto;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+}
+
+.figure-caption {
+    font-size: 8.2pt;
+    color: #475569;
+    font-weight: 500;
+    margin-top: 6px;
+    margin-bottom: 10px;
+    text-align: center;
+    font-style: italic;
+}
+
+/* Links */
+a {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Math formatting helpers */
+.math-inline {
+    font-family: "Cambria Math", "Times New Roman", serif;
+    font-style: italic;
+    color: #0f172a;
+}
+
+    </style>
+</head>
+<body>
+<h1 id="spamguard-ai-software-requirements-specification-srs">SpamGuard AI — Software Requirements Specification (SRS)</h1>
+<p><strong>Document Reference:</strong> <code>SG-SRS-IA3-V1.0</code><br />
+<strong>Evaluation:</strong> Software Engineering Internal Assessment 3 (IA3)<br />
+<strong>Academic Micro-Project:</strong> Micro Project – 05 (Semester 3)<br />
+<strong>Domain:</strong> Artificial Intelligence / Cybersecurity / Email Threat Intelligence<br />
+<strong>Author / Team:</strong> Candidate / SpamGuard AI Development Team<br />
+<strong>Date of Release:</strong> October 2026<br />
+<strong>Status:</strong> Completed, Verified, Implementation-Aligned  </p>
+<hr />
+<h2 id="executive-summary-metadata">Executive Summary &amp; Metadata</h2>
+<p>SpamGuard AI is a production-grade, highly interpretable electronic mail threat classification and intelligence system. It utilizes classical machine learning—specifically Term Frequency-Inverse Document Frequency (TF-IDF) unigram/bigram feature extraction paired with an optimized Multinomial Naïve Bayes probabilistic classifier (<span class="math-inline">α = 0.1</span>)—trained and evaluated on 5,923 authentic MIME messages from the official Apache SpamAssassin Public Corpus.</p>
+<p>This Software Requirements Specification (SRS) establishes the definitive functional, non-functional, interface, data, and behavioral requirements for SpamGuard AI, directly aligned with the verified software implementation across its Next.js frontend (port 3000), FastAPI REST inference service (port 8000), Streamlit fallback dashboard (port 8501), and frozen core inference engine.</p>
+<hr />
+<h2 id="1-introduction">1. Introduction</h2>
+<h3 id="11-purpose">1.1 Purpose</h3>
+<p>This document establishes the comprehensive software requirements for <strong>SpamGuard AI — AI-Based Spam Email Classifier</strong>. It details all functional capabilities, performance criteria, security boundaries, external interface protocols, data schemas, and use-case interactions realized in the working software system. This specification serves as the formal baseline for the Software Engineering IA3 evaluation, software testing, quality verification, and academic auditing.</p>
+<h3 id="12-scope">1.2 Scope</h3>
+<p>SpamGuard AI delivers an end-to-end, locally hosted email threat intelligence platform designed to classify incoming emails into <strong>Ham (Legitimate, 0)</strong> or <strong>Spam (Malicious / Unsolicited, 1)</strong> with high precision and sub-millisecond execution latency.</p>
+<p>The system encompasses:
+1. <strong>Core Inference Engine (<code>src/predict.py</code>):</strong> Encapsulating frozen model loading, pre-inference SHA-256 cryptographic integrity verification, text normalization, vectorized single/batch classification, mathematical feature attribution via Naïve Bayes log-odds difference, and spreadsheet formula injection defense.
+2. <strong>RESTful Microservice (<code>src/api.py</code>):</strong> High-performance FastAPI service on port 8000 exposing typed Pydantic endpoints for prediction, bulk CSV ingestion, verified academic telemetry, system health monitoring, and Google OAuth 2.0 session handling.
+3. <strong>Primary Web Presentation Layer (<code>frontend/</code>):</strong> Contemporary Next.js 16 + TypeScript single-page application on port 3000 styled with an editorial Anthracite dark-mode design, dynamic routing, real-time probability visualization, and interactive inspection drawers.
+4. <strong>Resilient Application Fallback (<code>app.py</code>):</strong> Fully functional, standalone Streamlit dashboard on port 8501 providing complete operational redundancy, Plotly telemetry, and educational disclosures without external framework dependencies.
+5. <strong>Threat Intelligence Integration (<code>src/gmail/</code>):</strong> Optional Google OAuth 2.0 integration operating under strict read-only scopes (<code>gmail.readonly</code>) allowing security analysts to inspect real mailboxes without storing message text on disk.</p>
+<h3 id="13-project-objectives">1.3 Project Objectives</h3>
+<p>SpamGuard AI fulfills the following core engineering and pedagogical objectives:
+- <strong>Objective 1 (Ingestion &amp; Sanitization):</strong> Parse authentic multipart MIME messages from raw archives while rejecting directory traversal, symlink attacks, and executable attachments.
+- <strong>Objective 2 (Data Leakage Elimination):</strong> Enforce strict stratified partitioning (70% Train, 15% Validation, 15% Test) ensuring zero content overlap and zero shared Message-IDs across partitions.
+- <strong>Objective 3 (Feature Representation):</strong> Extract high-dimensional textual feature representations using sublinear unigram/bigram TF-IDF vectorization capped at 20,000 features.
+- <strong>Objective 4 (Probabilistic Modeling):</strong> Optimize Lidstone smoothing parameter <span class="math-inline">α</span> against a dedicated validation set, achieving optimal F1-score performance.
+- <strong>Objective 5 (Asymmetric Error Control):</strong> Suppress the False Positive Rate (FPR) below 2.0% on held-out test data to prevent legitimate correspondence from being erroneously flagged.
+- <strong>Objective 6 (Explainability by Design):</strong> Formulate mathematical token-level log-odds attribution providing clear human-interpretable rationale for every prediction.
+- <strong>Objective 7 (Defensive Hardening):</strong> Guard against CSV formula injection attacks, payload denial-of-service, CSRF state tampering, and unauthorized model mutations.
+- <strong>Objective 8 (Full Redundancy):</strong> Provide a decoupled Next.js/FastAPI production architecture with a 100% independent Streamlit fallback.</p>
+<h3 id="14-intended-audience">1.4 Intended Audience</h3>
+<ul>
+<li><strong>Software Engineering Academic Evaluators:</strong> Reviewing specification rigor, UML alignment, verification test cases, and requirement traceability.</li>
+<li><strong>Cybersecurity &amp; Machine Learning Engineers:</strong> Auditing algorithm selection, explainability formulas, and defensive attack mitigations.</li>
+<li><strong>System Administrators &amp; DevOps:</strong> Configuring operating environments, port bindings, and API dependencies.</li>
+</ul>
+<h3 id="15-definitions-acronyms-and-abbreviations">1.5 Definitions, Acronyms, and Abbreviations</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Term / Acronym</th>
+<th style="text-align: left;">Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>API</strong></td>
+<td style="text-align: left;">Application Programming Interface (HTTP/REST communication)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>AUC-ROC</strong></td>
+<td style="text-align: left;">Area Under the Receiver Operating Characteristic Curve</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>CORS</strong></td>
+<td style="text-align: left;">Cross-Origin Resource Sharing</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>CSRF</strong></td>
+<td style="text-align: left;">Cross-Site Request Forgery</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>CSV</strong></td>
+<td style="text-align: left;">Comma-Separated Values file format</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>DoR / DoS</strong></td>
+<td style="text-align: left;">Denial of Service</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>FNR</strong></td>
+<td style="text-align: left;">False Negative Rate (<span class="math-inline">FN / (TP + FN)</span>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>FPR</strong></td>
+<td style="text-align: left;">False Positive Rate (<span class="math-inline">FP / (TN + FP)</span>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Ham</strong></td>
+<td style="text-align: left;">Legitimate, desired electronic mail correspondence (Class 0)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>MIME</strong></td>
+<td style="text-align: left;">Multipurpose Internet Mail Extensions</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>MNB</strong></td>
+<td style="text-align: left;">Multinomial Naïve Bayes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>NFR</strong></td>
+<td style="text-align: left;">Non-Functional Requirement</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>NFKC</strong></td>
+<td style="text-align: left;">Unicode Normalization Form KC (Compatibility Decomposition, followed by Canonical Composition)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>OAuth 2.0</strong></td>
+<td style="text-align: left;">Open Authorization 2.0 protocol for secure third-party delegated access</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>RTM</strong></td>
+<td style="text-align: left;">Requirement Traceability Matrix</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SHA-256</strong></td>
+<td style="text-align: left;">Secure Hash Algorithm 256-bit cryptographic digest</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Spam</strong></td>
+<td style="text-align: left;">Unsolicited, commercial, fraudulent, or malicious email correspondence (Class 1)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SPA</strong></td>
+<td style="text-align: left;">Single Page Application</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SRS</strong></td>
+<td style="text-align: left;">Software Requirements Specification</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>TF-IDF</strong></td>
+<td style="text-align: left;">Term Frequency-Inverse Document Frequency</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="2-overall-description">2. Overall Description</h2>
+<h3 id="21-product-perspective">2.1 Product Perspective</h3>
+<p>SpamGuard AI is a self-contained, multi-tier threat classification platform designed for local enterprise network deployment. Unlike commercial cloud-based email filters that require forwarding private corporate emails to external third-party APIs (e.g., OpenAI or Google Gemini), SpamGuard AI operates entirely on-premise using a frozen, locally serialized Scikit-learn pipeline. All inference is computed in local volatile memory, guaranteeing absolute data privacy and zero cloud egress.</p>
+<pre><code>+-------------------------------------------------------------------------+
+|                         CLIENT PRESENTATION LAYER                       |
+|   +----------------------------------+  +---------------------------+   |
+|   |  Primary Web Application         |  |  Standalone Fallback      |   |
+|   |  Next.js 16 + TypeScript         |  |  Streamlit 1.66           |   |
+|   |  (Port 3000 / Modern Editorial)  |  |  (Port 8501 / Legacy UI)  |   |
+|   +----------------------------------+  +---------------------------+   |
++-------------------------------------------------------------------------+
+                                    |                   |
+                        HTTP / REST Proxy               |
+                                    v                   |
++--------------------------------------------------+    |
+|                FASTAPI REST SERVICE              |    |
+|   Port 8000 / Typed Pydantic Schemas             |    |
+|   src/api.py                                     |    |
++--------------------------------------------------+    |
+                                    |                   |
+                         In-Process Python Binding      |
+                                    v                   v
++-------------------------------------------------------------------------+
+|                  CORE PREDICTION &amp; SECURITY ENGINE                      |
+|   src/predict.py (SpamPredictor, Preprocessor, Log-Odds Explainer)       |
++-------------------------------------------------------------------------+
+                                    |
+                    Cryptographic Checksum Verification
+                                    v
++-------------------------------------------------------------------------+
+|                     FROZEN MACHINE LEARNING MODEL                       |
+|   models/spam_pipeline.joblib (SHA-256: c652119c99f0...)                |
+|   TF-IDF (20,000 Features) + Multinomial Naïve Bayes (alpha = 0.1)      |
++-------------------------------------------------------------------------+
+</code></pre>
+<h3 id="22-user-classes-and-characteristics">2.2 User Classes and Characteristics</h3>
+<ol>
+<li><strong>Tier 1 — Security Analyst / Enterprise User:</strong></li>
+<li>Evaluates suspicious emails, reviews threat verdicts, analyzes token log-odds attributions, uploads bulk CSV logs from mail transfer agents (MTAs), and exports sanitized classification reports.</li>
+<li>Requires an intuitive, low-friction interface with clear visual threat indicators and sub-second feedback.</li>
+<li><strong>Tier 2 — Academic Evaluator / Auditor:</strong></li>
+<li>Inspects model architecture, validates held-out test metrics (accuracy, precision, recall, F1, ROC-AUC), audits confusion matrix distributions, and verifies mathematical rigor.</li>
+<li>Requires access to verified academic reports, confusion matrix breakdowns, and training summaries.</li>
+<li><strong>Tier 3 — System Administrator / DevOps:</strong></li>
+<li>Deploys the service, validates API health (<code>/api/health</code>), audits cryptographic SHA-256 model checksums, monitors CPU/memory latency, and configures OAuth credentials.</li>
+</ol>
+<h3 id="23-operating-environment">2.3 Operating Environment</h3>
+<ul>
+<li><strong>Operating Systems:</strong> Windows 10/11 (verified on build 26300), Ubuntu Linux 22.04 LTS / 24.04 LTS, macOS Sonoma / Sequoia.</li>
+<li><strong>Python Environment:</strong> Python 3.12.x running within a dedicated virtual environment (<code>.venv</code>).</li>
+<li><strong>Node.js Environment:</strong> Node.js v18.0.0 or higher (v20+ recommended) with npm 10+.</li>
+<li><strong>Network Ports:</strong> Port 3000 (Next.js frontend), Port 8000 (FastAPI REST service), Port 8501 (Streamlit fallback).</li>
+<li><strong>Client Web Browsers:</strong> Google Chrome 120+, Mozilla Firefox 120+, Microsoft Edge 120+, Apple Safari 17+.</li>
+</ul>
+<h3 id="24-assumptions-and-dependencies">2.4 Assumptions and Dependencies</h3>
+<ul>
+<li><strong>Model Availability:</strong> The pre-trained pipeline artifact <code>models/spam_pipeline.joblib</code> exists, matches the expected SHA-256 hash <code>c652119c99f0db2abe0788969d002818478bb63be95e31e5f337eda8da6ddbb0</code>, and contains fitted <code>tfidf</code> and <code>classifier</code> steps.</li>
+<li><strong>Hardware Resources:</strong> Minimum 4 GB of host RAM and modern multi-core CPU. Zero requirement for discrete GPU hardware.</li>
+<li><strong>Software Dependencies:</strong> <code>scikit-learn==1.9.1</code>, <code>fastapi==0.162.0</code>, <code>uvicorn==0.54.0</code>, <code>pandas==3.1.0</code>, <code>numpy==2.2.6</code>, <code>joblib==1.6.0</code>, <code>streamlit==1.66.1</code>, <code>plotly==7.1.0</code>, <code>next==16.4.3</code>, <code>react==19.3.0</code>.</li>
+</ul>
+<h3 id="25-constraints">2.5 Constraints</h3>
+<ul>
+<li><strong>Model Immutability:</strong> The machine learning classifier is completely frozen. No online learning, re-fitting, or weight adaptation occurs during inference or application lifecycle.</li>
+<li><strong>Zero Disk Persistence of Message Bodies:</strong> User emails analyzed via single scan or batch classification are processed in volatile memory only and must never be written to persistent log files or relational databases.</li>
+<li><strong>Payload Limits:</strong> Single email classification requests are capped at 1,000,000 characters (1 MB). Batch CSV uploads are limited to 10,000 rows.</li>
+</ul>
+<hr />
+<h2 id="3-functional-requirements">3. Functional Requirements</h2>
+<h3 id="fr-001-email-subject-and-body-entry">FR-001: Email Subject and Body Entry</h3>
+<ul>
+<li><strong>Description:</strong> The system shall provide distinct input fields for email Subject and email Body in both the Next.js and Streamlit user interfaces.</li>
+<li><strong>Inputs:</strong> Text strings for Subject line (optional) and Body text (optional, but at least one must be non-empty).</li>
+<li><strong>Processing:</strong> The system shall combine both fields following the convention: <code>"{subject}\n\n{body}"</code> if both are present, or the individual non-empty string.</li>
+<li><strong>Output:</strong> Unified raw text buffer ready for sanitization.</li>
+</ul>
+<h3 id="fr-002-synthetic-demonstration-sample-selection">FR-002: Synthetic Demonstration Sample Selection</h3>
+<ul>
+<li><strong>Description:</strong> The system shall provide a curated library of pre-configured demonstration emails representing diverse threat and legitimate profiles (e.g., Urgent Phishing Wire Transfer, Prize Lottery Scam, Systems Engineering Update, Academic Meeting Notice).</li>
+<li><strong>Processing:</strong> Selecting a sample shall immediately populate the Subject and Body input fields.</li>
+<li><strong>Output:</strong> Pre-filled input fields allowing instant classification without manual typing.</li>
+</ul>
+<h3 id="fr-003-deterministic-text-preprocessing-and-normalization">FR-003: Deterministic Text Preprocessing and Normalization</h3>
+<ul>
+<li><strong>Description:</strong> The system shall sanitize incoming text identically to the training pipeline using Unicode NFKC normalization, whitespace compression, lowercasing, and regex token cleaning.</li>
+<li><strong>Validation:</strong> If the cleaned text is empty or contains only whitespace, the system shall reject the request with a <code>SpamGuardValidationError</code> and return HTTP 422.</li>
+<li><strong>Output:</strong> Cleaned, normalized string matching the TF-IDF feature space.</li>
+</ul>
+<h3 id="fr-004-binary-threat-classification-spam-vs-ham">FR-004: Binary Threat Classification (Spam vs. Ham)</h3>
+<ul>
+<li><strong>Description:</strong> The system shall classify the normalized email text into binary categories: <strong>Ham (0)</strong> or <strong>Spam (1)</strong> using the frozen Multinomial Naïve Bayes model.</li>
+<li><strong>Processing:</strong> Apply <code>pipeline.predict([cleaned_text])</code>.</li>
+<li><strong>Output:</strong> Categorical label (<code>"Spam"</code> or <code>"Ham"</code>) and integer class (<code>1</code> or <code>0</code>).</li>
+</ul>
+<h3 id="fr-005-calibrated-probability-estimation-visual-telemetry">FR-005: Calibrated Probability Estimation &amp; Visual Telemetry</h3>
+<ul>
+<li><strong>Description:</strong> The system shall compute posterior class probabilities <span class="math-inline">P(Ham)</span> and <span class="math-inline">P(Spam)</span> using <code>pipeline.predict_proba()</code>.</li>
+<li><strong>Validation:</strong> Probabilities must be strictly finite real numbers in the range <span class="math-inline">[0.0, 1.0]</span> summing to <span class="math-inline">1.0 \pm 10^{-5</span>.</li>
+<li><strong>Output:</strong> Floating-point probabilities rendered via animated gauges and numerical percentage badges.</li>
+</ul>
+<h3 id="fr-006-mathematical-feature-contribution-explainability">FR-006: Mathematical Feature Contribution Explainability</h3>
+<ul>
+<li><strong>Description:</strong> When explainability is enabled (<code>explain=True</code>), the system shall calculate the token-level contribution towards the classification verdict using the Naïve Bayes log-odds difference:
+<br />
+<div style="text-align:center; padding:8px; margin:10px 0; background:#f8fafc; border:1px solid #e2e8f0; border-radius:4px; font-family:'Cambria Math', serif; font-size:10pt;"><b>Δ_odds(w) = log P(w \mid Spam) - log P(w \mid Ham)</b></div></li>
+</ul>
+<div style="text-align:center; padding:8px; margin:10px 0; background:#f8fafc; border:1px solid #e2e8f0; border-radius:4px; font-family:'Cambria Math', serif; font-size:10pt;"><b>Contribution(w) = TF-IDF(w) × Δ_odds(w)</b></div>
+<ul>
+<li><strong>Processing:</strong> Tokens with <span class="math-inline">Δ_{odds &gt; 0</span> shall be tagged <code>"Spam-leaning"</code>; tokens with <span class="math-inline">Δ_{odds ≤ 0</span> shall be tagged <code>"Ham-leaning"</code>. The top <span class="math-inline">k</span> tokens (default 5 or 10) shall be extracted.</li>
+<li><strong>Output:</strong> Structured list of <code>FeatureContribution</code> objects rendered as a color-coded polarity impact table.</li>
+</ul>
+<h3 id="fr-007-batch-csv-file-upload-and-schema-validation">FR-007: Batch CSV File Upload and Schema Validation</h3>
+<ul>
+<li><strong>Description:</strong> The system shall allow users to upload CSV files containing multiple emails for high-throughput batch classification.</li>
+<li><strong>Validation:</strong> The CSV must contain either:</li>
+<li>Both a <code>'subject'</code> and <code>'body'</code> column (case-insensitive), OR</li>
+<li>A unified <code>'text'</code> / <code>'message'</code> column.
+  If neither schema is satisfied, the system shall reject the upload with an explicit schema error message.</li>
+<li><strong>Row Boundary:</strong> The system shall reject CSV files containing more than 10,000 rows to prevent memory exhaustion.</li>
+</ul>
+<h3 id="fr-008-high-throughput-vectorized-batch-inference">FR-008: High-Throughput Vectorized Batch Inference</h3>
+<ul>
+<li><strong>Description:</strong> The system shall perform batch classification using vectorized Scikit-learn array operations rather than iterative row-by-row loops.</li>
+<li><strong>Processing:</strong> Batch text preparation, vectorization, and inference executed as contiguous NumPy arrays.</li>
+<li><strong>Output:</strong> Comprehensive summary statistics: total emails scanned, spam count, ham count, spam percentage, ham percentage, and overall processing latency.</li>
+</ul>
+<h3 id="fr-009-batch-result-filtering-and-dynamic-search">FR-009: Batch Result Filtering and Dynamic Search</h3>
+<ul>
+<li><strong>Description:</strong> The system shall allow users to dynamically filter batch classification results by verdict: <code>"All"</code>, <code>"Spam Only"</code>, <code>"Ham Only"</code>, or <code>"Needs Review"</code>.</li>
+<li><strong>Processing:</strong> Client-side and in-memory filtering executed instantaneously without triggering re-inference.</li>
+<li><strong>Output:</strong> Filtered data table displaying email identifier, preview, predicted verdict, and spam probability.</li>
+</ul>
+<h3 id="fr-010-spreadsheet-formula-injection-sanitization-csv-export">FR-010: Spreadsheet Formula Injection Sanitization &amp; CSV Export</h3>
+<ul>
+<li><strong>Description:</strong> The system shall allow users to export classified batch results as a downloadable CSV file while enforcing automated defense against CSV formula injection (OWASP CSV Injection).</li>
+<li><strong>Processing:</strong> Every text cell shall be passed through <code>sanitize_csv_cell()</code>. If a cell begins with <code>'='</code>, <code>'+'</code>, <code>'-'</code>, <code>'@'</code>, <code>'\t'</code>, <code>'\r'</code>, or <code>'\n'</code>, the system shall prepend a single-quote character (<code>'</code>) to neutralize dynamic formula execution in Microsoft Excel and LibreOffice Calc.</li>
+<li><strong>Output:</strong> Sanitized, downloadable CSV stream.</li>
+</ul>
+<h3 id="fr-011-model-performance-analytics-empirical-disclosures">FR-011: Model Performance Analytics &amp; Empirical Disclosures</h3>
+<ul>
+<li><strong>Description:</strong> The system shall display verified academic performance metrics computed strictly on the held-out, quarantined test partition (<span class="math-inline">n=889</span>).</li>
+<li><strong>Metrics Presented:</strong></li>
+<li>Accuracy: <span class="math-inline">97.30\%</span></li>
+<li>Spam Precision: <span class="math-inline">97.33\%</span></li>
+<li>Spam Recall: <span class="math-inline">93.75\%</span></li>
+<li>Spam F1-Score: <span class="math-inline">95.51\%</span></li>
+<li>ROC-AUC: <span class="math-inline">0.9965</span></li>
+<li>False Positive Rate: <span class="math-inline">1.13\%</span> (<span class="math-inline">7 / 617</span> legitimate emails)</li>
+<li>Confusion Matrix: <span class="math-inline">TN = 610, FP = 7, FN = 17, TP = 255</span>.</li>
+<li><strong>Comparative Baseline:</strong> Direct comparison against the Zero-Intelligence Majority-Class Baseline (Accuracy <span class="math-inline">69.40\%</span>, Precision <span class="math-inline">0.0\%</span>, F1 <span class="math-inline">0.0\%</span>).</li>
+</ul>
+<h3 id="fr-012-restful-api-health-cryptographic-telemetry">FR-012: RESTful API Health &amp; Cryptographic Telemetry</h3>
+<ul>
+<li><strong>Description:</strong> The FastAPI service shall expose a <code>GET /api/health</code> endpoint providing operational status, active model identifier, Python/OS platform version, and real-time verification of the model's SHA-256 checksum against <code>EXPECTED_PIPELINE_SHA256</code>.</li>
+<li><strong>Output:</strong> JSON object conforming to <code>SystemHealthResponse</code>.</li>
+</ul>
+<h3 id="fr-013-restful-inference-endpoints">FR-013: RESTful Inference Endpoints</h3>
+<ul>
+<li><strong>Description:</strong> The FastAPI backend shall expose typed REST endpoints:</li>
+<li><code>POST /api/predict</code>: Single email classification with optional explainability.</li>
+<li><code>POST /api/predict/batch</code>: Bulk JSON array classification.</li>
+<li><code>POST /api/predict/csv</code>: Multipart form-data CSV file upload.</li>
+<li><code>GET /api/metrics</code>: Held-out test evaluation figures and confusion matrix data.</li>
+<li><code>GET /api/samples</code>: Synthetic demonstration sample catalog.</li>
+</ul>
+<h3 id="fr-014-dual-presentation-architecture-resilient-fallback">FR-014: Dual Presentation Architecture &amp; Resilient Fallback</h3>
+<ul>
+<li><strong>Description:</strong> The system shall support simultaneous or independent operation of both:</li>
+<li>The Next.js 16 modern editorial frontend on port 3000.</li>
+<li>The Streamlit 1.66 cyber-dashboard on port 8501.
+  Both interfaces must interface with the same frozen model engine and produce bit-for-bit identical classifications.</li>
+</ul>
+<h3 id="fr-015-google-oauth-20-identity-lifecycle-anti-csrf-protection">FR-015: Google OAuth 2.0 Identity Lifecycle &amp; Anti-CSRF Protection</h3>
+<ul>
+<li><strong>Description:</strong> The system shall support user authentication with Google using OAuth 2.0 with minimal read-only scopes (<code>gmail.readonly</code>, <code>openid</code>, <code>userinfo.email</code>, <code>userinfo.profile</code>).</li>
+<li><strong>Security:</strong> Must generate a cryptographically random, timestamped state token for anti-CSRF validation. All session payloads must be serialized using HMAC SHA-256 signatures via <code>URLSafeTimedSerializer</code> and transmitted via HttpOnly cookies.</li>
+</ul>
+<h3 id="fr-016-live-gmail-mailbox-scanning-threat-categorization">FR-016: Live Gmail Mailbox Scanning &amp; Threat Categorization</h3>
+<ul>
+<li><strong>Description:</strong> Authenticated users shall be able to fetch up to 50 recent inbox messages from their Google account, execute batch threat analysis, and categorize emails into <code>"Spam"</code>, <code>"Ham"</code>, or <code>"Needs Review"</code>.</li>
+<li><strong>Output:</strong> Live threat summary cards, review counters, and individual email threat badges.</li>
+</ul>
+<h3 id="fr-017-configurable-uncertainty-review-margin-thresholds">FR-017: Configurable Uncertainty Review Margin Thresholds</h3>
+<ul>
+<li><strong>Description:</strong> The system shall provide runtime-adjustable threshold boundaries (default: Low = <span class="math-inline">0.35</span>, High = <span class="math-inline">0.65</span>). Emails with <span class="math-inline">P(Spam) ≥ 0.65</span> are marked Spam; <span class="math-inline">≤ 0.35</span> are marked Ham; and intermediate values (<span class="math-inline">0.35 &lt; P &lt; 0.65</span>) are flagged as <code>"Needs Review"</code>.</li>
+</ul>
+<h3 id="fr-018-pre-inference-cryptographic-integrity-check">FR-018: Pre-Inference Cryptographic Integrity Check</h3>
+<ul>
+<li><strong>Description:</strong> Prior to executing inference, <code>SpamPredictor</code> shall compute the SHA-256 hash of <code>models/spam_pipeline.joblib</code>. If the hash does not match <code>c652119c99f0db2abe0788969d002818478bb63be95e31e5f337eda8da6ddbb0</code>, the system shall immediately abort with <code>SpamGuardModelError</code> to prevent model tampering.</li>
+</ul>
+<hr />
+<h2 id="4-non-functional-requirements">4. Non-Functional Requirements</h2>
+<h3 id="nfr-001-performance-single-email-latency">NFR-001: Performance — Single Email Latency</h3>
+<ul>
+<li><strong>Requirement:</strong> Median single-email inference execution time (text cleaning, vectorization, Naïve Bayes scoring, and top-5 explainability extraction) shall not exceed 50.0 ms under standard CPU workloads.</li>
+<li><strong>Empirical Measurement:</strong> Hardware benchmarks demonstrate a median single inference latency of <strong>1.04 ms</strong> (over 45x faster than required threshold).</li>
+</ul>
+<h3 id="nfr-002-performance-batch-classification-throughput">NFR-002: Performance — Batch Classification Throughput</h3>
+<ul>
+<li><strong>Requirement:</strong> The system shall sustain a batch inference throughput exceeding 5,000 emails per second for text-only email batches on standard x86_64 hardware.</li>
+<li><strong>Empirical Measurement:</strong> Vectorized batch inference on 1,000 synthetic records executes in <strong>81.2 ms</strong>, representing an effective throughput of <strong>12,315 emails/second</strong>.</li>
+</ul>
+<h3 id="nfr-003-accuracy-asymmetric-error-control">NFR-003: Accuracy &amp; Asymmetric Error Control</h3>
+<ul>
+<li><strong>Requirement:</strong> The model shall achieve an overall Classification Accuracy of <span class="math-inline">≥ 95.0\%</span>, a Spam Precision of <span class="math-inline">≥ 95.0\%</span>, and a False Positive Rate (FPR) of <span class="math-inline">≤ 2.0\%</span> on the held-out test partition (<span class="math-inline">n=889</span>).</li>
+<li><strong>Empirical Measurement:</strong> Evaluated test performance:</li>
+<li>Accuracy: <strong><span class="math-inline">97.30\%</span></strong></li>
+<li>Spam Precision: <strong><span class="math-inline">97.33\%</span></strong></li>
+<li>Spam Recall: <strong><span class="math-inline">93.75\%</span></strong></li>
+<li>Spam F1-Score: <strong><span class="math-inline">95.51\%</span></strong></li>
+<li>ROC-AUC: <strong><span class="math-inline">0.9965</span></strong></li>
+<li>False Positive Rate: <strong><span class="math-inline">1.13\%</span></strong> (<span class="math-inline">7</span> False Positives out of <span class="math-inline">617</span> legitimate emails).</li>
+</ul>
+<h3 id="nfr-004-reliability-determinism">NFR-004: Reliability &amp; Determinism</h3>
+<ul>
+<li><strong>Requirement:</strong> The classification engine must be 100% deterministic. Submitting identical input text to <code>predict_email()</code> must produce identical predicted classes, probabilities, and feature contributions across arbitrary executions.</li>
+<li><strong>Verification:</strong> Verified by automated test case <code>test_deterministic_predictions</code> passing with identical numerical assertions.</li>
+</ul>
+<h3 id="nfr-005-availability-graceful-degradation">NFR-005: Availability &amp; Graceful Degradation</h3>
+<ul>
+<li><strong>Requirement:</strong> In the event that the primary Next.js frontend or FastAPI service experiences disruption, the Streamlit dashboard on port 8501 shall continue functioning independently using direct in-process bindings. If the model artifact is unavailable, the API must return structured HTTP 500 error messages rather than unhandled process terminations.</li>
+</ul>
+<h3 id="nfr-006-security-denial-of-service-defense">NFR-006: Security — Denial-of-Service Defense</h3>
+<ul>
+<li><strong>Requirement:</strong> The system shall enforce a strict upper bound of 1,000,000 characters (1 MB) on input email text. Requests exceeding this threshold must be rejected immediately during text preparation with HTTP 422 to protect CPU memory and regex engines.</li>
+</ul>
+<h3 id="nfr-007-security-formula-injection-neutralization">NFR-007: Security — Formula Injection Neutralization</h3>
+<ul>
+<li><strong>Requirement:</strong> The system must neutralize active formula execution prefixes (<code>=</code>, <code>+</code>, <code>-</code>, <code>@</code>, <code>\t</code>, <code>\r</code>, <code>\n</code>) in all CSV export outputs in compliance with OWASP guidelines.</li>
+<li><strong>Verification:</strong> Verified by unit tests asserting that <code>=SUM(A1:A10)</code> is sanitized to <code>'=SUM(A1:A10)</code>.</li>
+</ul>
+<h3 id="nfr-008-security-cryptographic-session-state-signing">NFR-008: Security — Cryptographic Session &amp; State Signing</h3>
+<ul>
+<li><strong>Requirement:</strong> All session cookies and OAuth state tokens must be cryptographically signed using <code>URLSafeTimedSerializer</code> with SHA-256 HMAC. State tokens must expire after 15 minutes; session cookies must expire after 7 days and enforce <code>HttpOnly</code> flags.</li>
+</ul>
+<h3 id="nfr-009-privacy-zero-mail-storage-invariant">NFR-009: Privacy — Zero Mail Storage Invariant</h3>
+<ul>
+<li><strong>Requirement:</strong> The system shall adhere to a strict privacy-first architecture. Electronic mail content submitted for inspection must exist solely in ephemeral RAM during inference. The system shall never persist email bodies to SQLite, disk caches, or external third-party cloud logging services.</li>
+</ul>
+<h3 id="nfr-010-maintainability-automated-test-coverage">NFR-010: Maintainability &amp; Automated Test Coverage</h3>
+<ul>
+<li><strong>Requirement:</strong> The software codebase shall maintain modular separation between preprocessing, configuration, inference, presentation, and testing. The automated test suite must achieve <span class="math-inline">≥ 90\%</span> passing rate across all test modules.</li>
+<li><strong>Empirical Measurement:</strong> <strong>152 out of 152 Pytest tests pass (100%)</strong> + <strong>5 out of 5 Node.js frontend tests pass (100%)</strong>, totaling <strong>157 passing automated tests</strong>.</li>
+</ul>
+<h3 id="nfr-011-portability-cross-platform-compliance">NFR-011: Portability &amp; Cross-Platform Compliance</h3>
+<ul>
+<li><strong>Requirement:</strong> The entire software system must execute without modification across Windows, Linux, and macOS environments using standard Python virtual environments and Node.js package managers. All file path manipulations must use <code>pathlib.Path</code> with forward/backward slash normalization.</li>
+</ul>
+<h3 id="nfr-012-usability-ergonomics">NFR-012: Usability &amp; Ergonomics</h3>
+<ul>
+<li><strong>Requirement:</strong> Both web interfaces shall support responsive design across Desktop (1920px), Laptop (1366px), Tablet (768px), and Mobile (390px). Threat levels must be clearly delineated using high-contrast, accessible color schemes (Emerald <code>#54D6A0</code> for Ham, Crimson <code>#FF5D66</code> for Spam, Amber <code>#F5A623</code> for Needs Review).</li>
+</ul>
+<hr />
+<h2 id="5-external-interface-requirements">5. External Interface Requirements</h2>
+<h3 id="51-user-interfaces">5.1 User Interfaces</h3>
+<ol>
+<li><strong>Next.js 16 Editorial Web Workstation (<code>frontend/</code>):</strong></li>
+<li>Served on <code>http://localhost:3000</code>.</li>
+<li>Built with Next.js 16, React 19, TypeScript, and Tailwind CSS.</li>
+<li>Features: Collapsible left navigation sidebar, top breadcrumb bar with live telemetry, Overview Dashboard, Single Threat Inspector, Batch CSV Classifier, Model Performance Analytics, Connected Accounts Manager, Uncertainty Settings, and Message Detail Slide-Over Drawer.</li>
+<li><strong>Streamlit 1.66 Resilient Dashboard (<code>app.py</code>):</strong></li>
+<li>Served on <code>http://localhost:8501</code>.</li>
+<li>Built with Streamlit and Plotly Graph Objects.</li>
+<li>Features: Multi-tab navigation, Plotly probability gauge, confusion matrix heatmap, top discriminative feature word clouds, sample loader dropdown, and sanitized CSV download button.</li>
+</ol>
+<h3 id="52-backend-api-interface">5.2 Backend API Interface</h3>
+<p>The FastAPI service exposes the following typed RESTful endpoints:
+- <code>GET /api/health</code> — Returns <code>SystemHealthResponse</code> with model availability and SHA-256 verification.
+- <code>POST /api/predict</code> — Ingests <code>PredictRequest</code>, returns <code>PredictResponse</code> with probabilities and top-k log-odds features.
+- <code>POST /api/predict/batch</code> — Ingests <code>BatchPredictRequest</code>, returns <code>BatchResponse</code> with aggregate metrics.
+- <code>POST /api/predict/csv</code> — Ingests multipart form CSV file, returns <code>BatchResponse</code>.
+- <code>GET /api/metrics</code> — Returns full held-out test evaluation report and baseline comparison data.
+- <code>GET /api/samples</code> — Returns list of pre-configured synthetic sample emails.
+- <code>GET /api/auth/status</code> — Returns Google OAuth authentication status and configured scopes.
+- <code>GET /api/auth/google/start</code> — Generates Google OAuth consent URL with cryptographic state token.
+- <code>GET /api/auth/google/callback</code> — Validates OAuth authorization code, creates session token, sets HttpOnly cookie, and redirects to frontend.
+- <code>POST /api/auth/disconnect</code> — Clears authenticated session and revokes access token.
+- <code>GET /api/gmail/messages</code> — Retrieves recent Gmail message metadata.
+- <code>POST /api/gmail/scan/recent</code> — Scans up to 50 recent inbox emails and returns threat classifications.
+- <code>GET /api/settings</code> &amp; <code>POST /api/settings</code> — Retrieves and updates classification uncertainty thresholds.</p>
+<h3 id="53-software-interfaces">5.3 Software Interfaces</h3>
+<ul>
+<li><strong>Scikit-learn Pipeline:</strong> In-memory integration via <code>joblib.load()</code>.</li>
+<li><strong>Pandas DataFrames:</strong> Tabular batch data manipulation and CSV parsing.</li>
+<li><strong>Plotly &amp; Matplotlib Engines:</strong> Rendering confusion matrix heatmaps and ROC curves.</li>
+<li><strong>Google OAuth 2.0 API:</strong> HTTPS communication with <code>accounts.google.com</code> and <code>gmail.googleapis.com</code>.</li>
+</ul>
+<h3 id="54-hardware-requirements">5.4 Hardware Requirements</h3>
+<ul>
+<li><strong>Processor:</strong> Minimum 2.0 GHz dual-core x86_64 or ARM64 processor.</li>
+<li><strong>Memory (RAM):</strong> Minimum 4 GB RAM (8 GB recommended for large batch processing).</li>
+<li><strong>Storage:</strong> Minimum 500 MB free disk space for repository, dependencies, and model artifacts.</li>
+</ul>
+<hr />
+<h2 id="6-data-requirements">6. Data Requirements</h2>
+<h3 id="61-data-inputs">6.1 Data Inputs</h3>
+<ul>
+<li><strong>Single Email Input:</strong></li>
+<li><code>subject</code>: String, 0 to 1,000,000 characters.</li>
+<li><code>body</code>: String, 0 to 1,000,000 characters.</li>
+<li>At least one field must contain printable, non-whitespace characters.</li>
+<li><strong>Batch CSV Input:</strong></li>
+<li>Standard Comma-Separated Values file formatted as UTF-8, UTF-8-BOM, ISO-8859-1, or Windows-1252.</li>
+<li>Header row containing <code>subject</code> and <code>body</code> (or <code>text</code>).</li>
+<li>Row limit: <span class="math-inline">≤ 10,000</span> records.</li>
+</ul>
+<h3 id="62-data-outputs-prediction-schema">6.2 Data Outputs &amp; Prediction Schema</h3>
+<p>Every single-email prediction outputs an immutable <code>PredictionResult</code> structure:</p>
+<pre><code class="language-json">{
+  &quot;predicted_class&quot;: 1,
+  &quot;predicted_label&quot;: &quot;Spam&quot;,
+  &quot;spam_probability&quot;: 0.9852,
+  &quot;ham_probability&quot;: 0.0148,
+  &quot;is_spam&quot;: true,
+  &quot;model_identifier&quot;: &quot;MultinomialNB(alpha=0.1) + TF-IDF(20,000 features)&quot;,
+  &quot;processing_time_ms&quot;: 1.24,
+  &quot;cleaned_char_count&quot;: 412,
+  &quot;top_features&quot;: [
+    {
+      &quot;token&quot;: &quot;guaranteed&quot;,
+      &quot;weight&quot;: 0.3812,
+      &quot;log_odds_diff&quot;: 4.1205,
+      &quot;contribution&quot;: 1.5707,
+      &quot;association&quot;: &quot;Spam-leaning&quot;
+    }
+  ]
+}
+</code></pre>
+<h3 id="63-model-artifact-specifications">6.3 Model Artifact Specifications</h3>
+<ul>
+<li><strong>File Location:</strong> <code>models/spam_pipeline.joblib</code></li>
+<li><strong>File Size:</strong> Approximately 1.15 MB</li>
+<li><strong>Expected SHA-256 Checksum:</strong> <code>c652119c99f0db2abe0788969d002818478bb63be95e31e5f337eda8da6ddbb0</code></li>
+<li><strong>Pipeline Architecture:</strong></li>
+<li>Step 1: <code>TfidfVectorizer(max_features=20000, ngram_range=(1, 2), min_df=2, max_df=0.98, sublinear_tf=True)</code></li>
+<li>Step 2: <code>MultinomialNB(alpha=0.1, fit_prior=True)</code></li>
+</ul>
+<h3 id="64-dataset-partitions-apache-spamassassin-public-corpus">6.4 Dataset Partitions (Apache SpamAssassin Public Corpus)</h3>
+<p>The underlying dataset originates from the official Apache SpamAssassin public archives:
+- <code>20030228_easy_ham.tar.bz2</code> (<span class="math-inline">n=2,472</span> clean)
+- <code>20030228_easy_ham_2.tar.bz2</code> (<span class="math-inline">n=1,389</span> clean)
+- <code>20030228_hard_ham.tar.bz2</code> (<span class="math-inline">n=248</span> clean)
+- <code>20030228_spam.tar.bz2</code> (<span class="math-inline">n=482</span> clean)
+- <code>20050311_spam_2.tar.bz2</code> (<span class="math-inline">n=1,332</span> clean)
+- <strong>Total Valid Corpus:</strong> 5,923 emails (4,109 Ham [69.37%], 1,814 Spam [30.63%]).
+- <strong>Stratified Partitioning (Random Seed 42):</strong>
+  - <strong>Train Partition (70%):</strong> 4,145 samples (2,876 Ham, 1,269 Spam).
+  - <strong>Validation Partition (15%):</strong> 889 samples (616 Ham, 273 Spam).
+  - <strong>Held-Out Test Partition (15%):</strong> 889 samples (617 Ham, 272 Spam, Quarantined).</p>
+<hr />
+<h2 id="7-use-cases">7. Use Cases</h2>
+<h3 id="uc-01-single-email-threat-inspection">UC-01: Single Email Threat Inspection</h3>
+<ul>
+<li><strong>Primary Actor:</strong> Security Analyst</li>
+<li><strong>Preconditions:</strong> FastAPI service running on port 8000; Next.js frontend running on port 3000 (or Streamlit running on port 8501); model authenticated.</li>
+<li><strong>Main Success Scenario:</strong></li>
+<li>User navigates to the Single Email Scanner view.</li>
+<li>User enters Subject and Body text (or clicks a synthetic demonstration sample).</li>
+<li>User clicks "Classify Email" (or "Scan Email").</li>
+<li>System normalizes and validates text against empty bounds and size limits.</li>
+<li>System generates TF-IDF sparse vector and computes Naïve Bayes posterior probabilities.</li>
+<li>System renders Threat Verdict Card (Ham Shield or Phishing Alert).</li>
+<li>System renders animated probability gauge displaying <span class="math-inline">P(Spam)</span> and <span class="math-inline">P(Ham)</span>.</li>
+<li>System renders execution latency telemetry.</li>
+<li><strong>Alternative Scenarios:</strong></li>
+<li><em>4a. Empty Input:</em> System halts inference, renders validation banner: <em>"Email content is empty or contains only whitespace after cleaning"</em>.</li>
+<li><em>4b. Oversized Input (&gt; 1MB):</em> System halts inference, renders security alert: <em>"Input text exceeds maximum allowed limit of 1,000,000 characters"</em>.</li>
+<li><strong>Postconditions:</strong> Classification result displayed; zero email text written to persistent disk storage.</li>
+</ul>
+<h3 id="uc-02-feature-contribution-and-explainability-inspection">UC-02: Feature Contribution and Explainability Inspection</h3>
+<ul>
+<li><strong>Primary Actor:</strong> Security Analyst / Academic Evaluator</li>
+<li><strong>Preconditions:</strong> UC-01 has executed with <code>explain=True</code>.</li>
+<li><strong>Main Success Scenario:</strong></li>
+<li>System extracts non-zero feature terms present in the document vocabulary.</li>
+<li>System computes token log-odds difference: <span class="math-inline">Δ_{odds = \log P(w \mid Spam) - \log P(w \mid Ham)</span>.</li>
+<li>System calculates token contribution: <span class="math-inline">Weight × Δ_{odds</span>.</li>
+<li>System sorts tokens by absolute magnitude and extracts top <span class="math-inline">k</span> terms.</li>
+<li>System displays interactive table showing Token, TF-IDF Weight, Log-Odds Difference, Contribution, and Polarity (<code>Spam-leaning</code> vs. <code>Ham-leaning</code>).</li>
+<li><strong>Postconditions:</strong> User understands exactly which vocabulary terms caused the classification decision.</li>
+</ul>
+<h3 id="uc-03-batch-csv-scanning-and-sanitized-export">UC-03: Batch CSV Scanning and Sanitized Export</h3>
+<ul>
+<li><strong>Primary Actor:</strong> Security Analyst / Mail Administrator</li>
+<li><strong>Preconditions:</strong> User possesses a CSV file with up to 10,000 emails.</li>
+<li><strong>Main Success Scenario:</strong></li>
+<li>User navigates to Batch Scanner view.</li>
+<li>User uploads CSV file via drag-and-drop or file selector.</li>
+<li>System validates CSV header schema for <code>'subject'</code>/<code>'body'</code> or <code>'text'</code>.</li>
+<li>User clicks "Scan Entire Batch".</li>
+<li>System executes vectorized text preparation, vectorization, and model inference across all rows.</li>
+<li>System displays summary metric cards: Total Scanned, Spam Detected, Ham Count, Spam Percentage, Average Latency.</li>
+<li>User inspects filtered results table.</li>
+<li>User clicks "Export Clean Results (CSV)".</li>
+<li>System applies <code>sanitize_csv_cell()</code> to neutralize spreadsheet formula injection.</li>
+<li>Browser downloads sanitized CSV file.</li>
+<li><strong>Alternative Scenarios:</strong></li>
+<li><em>3a. Invalid Schema:</em> CSV lacks required columns; system displays schema error with required format guide.</li>
+<li><em>3b. Exceeds Row Limit (&gt; 10,000 rows):</em> System rejects upload with batch size bound error.</li>
+<li><strong>Postconditions:</strong> Sanitized classification report saved to user's local downloads.</li>
+</ul>
+<h3 id="uc-04-model-analytics-and-confusion-matrix-review">UC-04: Model Analytics and Confusion Matrix Review</h3>
+<ul>
+<li><strong>Primary Actor:</strong> Academic Evaluator</li>
+<li><strong>Preconditions:</strong> Test evaluation report <code>reports/test_evaluation.json</code> exists.</li>
+<li><strong>Main Success Scenario:</strong></li>
+<li>User navigates to Model Analytics view.</li>
+<li>System reads frozen evaluation figures and renders interactive KPI cards (97.30% Accuracy, 97.33% Precision, 93.75% Recall, 95.51% F1, 0.9965 ROC-AUC).</li>
+<li>System renders Confusion Matrix Heatmap (<span class="math-inline">TN=610, FP=7, FN=17, TP=255</span>).</li>
+<li>System displays comparative bar chart benchmarking SpamGuard AI against the Zero-Intelligence Majority Baseline.</li>
+<li>System renders Top Discriminative Words bar charts for Spam and Ham.</li>
+<li><strong>Postconditions:</strong> Evaluator verifies all empirical academic claims without modifying model weights.</li>
+</ul>
+<h3 id="uc-05-live-gmail-mailbox-scanning">UC-05: Live Gmail Mailbox Scanning</h3>
+<ul>
+<li><strong>Primary Actor:</strong> Security Analyst / End User</li>
+<li><strong>Preconditions:</strong> Google OAuth credentials configured in <code>.env</code>.</li>
+<li><strong>Main Success Scenario:</strong></li>
+<li>User navigates to Connected Accounts and clicks "Connect Google Account".</li>
+<li>System generates OAuth 2.0 authorization URL with anti-CSRF state token.</li>
+<li>User approves read-only permissions on Google consent screen.</li>
+<li>Google redirects to <code>/api/auth/google/callback</code>.</li>
+<li>System exchanges code for tokens, sets signed session cookie, and redirects user to <code>/inbox</code>.</li>
+<li>User selects batch count and clicks "Scan Recent Inbox".</li>
+<li>System fetches messages, parses plain text / HTML fallback, and executes threat inference.</li>
+<li>System flags emails exceeding threshold as Spam or Needs Review.</li>
+<li><strong>Postconditions:</strong> Mailbox scanned; zero email bodies stored on server.</li>
+</ul>
+<h3 id="uc-06-system-health-and-model-integrity-audit">UC-06: System Health and Model Integrity Audit</h3>
+<ul>
+<li><strong>Primary Actor:</strong> System Administrator / Automated Monitor</li>
+<li><strong>Preconditions:</strong> FastAPI backend running.</li>
+<li><strong>Main Success Scenario:</strong></li>
+<li>Client sends <code>GET /api/health</code>.</li>
+<li>System computes real-time SHA-256 hash of <code>models/spam_pipeline.joblib</code>.</li>
+<li>System compares calculated hash with <code>c652119c99f0db2abe0788969d002818478bb63be95e31e5f337eda8da6ddbb0</code>.</li>
+<li>System responds with HTTP 200 and JSON containing <code>"status": "OPERATIONAL"</code>, <code>"model_sha256_verified": true</code>.</li>
+<li><strong>Alternative Scenarios:</strong></li>
+<li><em>2a. Model Corrupted or Missing:</em> System responds with <code>"status": "DEGRADED"</code>, <code>"model_sha256_verified": false</code>.</li>
+<li><strong>Postconditions:</strong> Telemetry confirmed.</li>
+</ul>
+<hr />
+<h2 id="8-requirement-traceability-matrix-summary">8. Requirement Traceability Matrix (Summary)</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Req ID</th>
+<th style="text-align: left;">Requirement Summary</th>
+<th style="text-align: left;">Implementing Module</th>
+<th style="text-align: left;">Related Use Case</th>
+<th style="text-align: left;">UML Diagram</th>
+<th style="text-align: left;">Test Case ID</th>
+<th style="text-align: center;">Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>FR-001</strong></td>
+<td style="text-align: left;">Email Subject &amp; Body Entry</td>
+<td style="text-align: left;"><code>src/predict.py</code>, <code>EmailScanner.tsx</code>, <code>app.py</code></td>
+<td style="text-align: left;">UC-01</td>
+<td style="text-align: left;">01, 03, 04</td>
+<td style="text-align: left;"><code>TC-POS-01</code>, <code>TC-FNC-01</code></td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>FR-002</strong></td>
+<td style="text-align: left;">Synthetic Sample Selection</td>
+<td style="text-align: left;"><code>src/ui_helpers.py</code>, <code>src/api.py</code></td>
+<td style="text-align: left;">UC-01</td>
+<td style="text-align: left;">01, 03</td>
+<td style="text-align: left;"><code>TC-FNC-02</code></td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>FR-003</strong></td>
+<td style="text-align: left;">Preprocessing &amp; Empty Validation</td>
+<td style="text-align: left;"><code>src/preprocess.py</code>, <code>src/predict.py</code></td>
+<td style="text-align: left;">UC-01</td>
+<td style="text-align: left;">03, 04, 05</td>
+<td style="text-align: left;"><code>TC-NEG-01</code>, <code>TC-BND-01</code></td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>FR-004</strong></td>
+<td style="text-align: left;">Binary Threat Classification</td>
+<td style="text-align: left;"><code>src/predict.py</code>, <code>models/spam_pipeline.joblib</code></td>
+<td style="text-align: left;">UC-01</td>
+<td style="text-align: left;">01, 02, 03, 04</td>
+<td style="text-align: left;"><code>TC-POS-01</code>, <code>TC-POS-02</code></td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>FR-005</strong></td>
+<td style="text-align: left;">Calibrated Probability Scoring</td>
+<td style="text-align: left;"><code>src/predict.py</code>, <code>src/api.py</code></td>
+<td style="text-align: left;">UC-01</td>
+<td style="text-align: left;">01, 03, 04</td>
+<td style="text-align: left;"><code>TC-POS-01</code>, <code>TC-FNC-03</code></td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>FR-006</strong></td>
+<td style="text-align: left;">Feature Log-Odds Explainability</td>
+<td style="text-align: left;"><code>src/predict.py</code> (<code>explain_email</code>)</td>
+<td style="text-align: left;">UC-02</td>
+<td style="text-align: left;">01, 02, 03, 04</td>
+<td style="text-align: left;"><code>TC-FNC-04</code>, <code>TC-INT-02</code></td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>FR-007</strong></td>
+<td style="text-align: left;">CSV Upload &amp; Schema Validation</td>
+<td style="text-align: left;"><code>src/predict.py</code>, <code>src/api.py</code>, <code>BatchScanner.tsx</code></td>
+<td style="text-align: left;">UC-03</td>
+<td style="text-align: left;">01, 04, 05</td>
+<td style="text-align: left;"><code>TC-NEG-02</code>, <code>TC-BND-02</code></td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>FR-008</strong></td>
+<td style="text-align: left;">Vectorized Batch Inference</td>
+<td style="text-align: left;"><code>src/predict.py</code> (<code>predict_batch</code>)</td>
+<td style="text-align: left;">UC-03</td>
+<td style="text-align: left;">01, 02, 05</td>
+<td style="text-align: left;"><code>TC-FNC-05</code>, <code>TC-INT-03</code></td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>FR-009</strong></td>
+<td style="text-align: left;">Batch Result Filtering</td>
+<td style="text-align: left;"><code>BatchScanner.tsx</code>, <code>app.py</code></td>
+<td style="text-align: left;">UC-03</td>
+<td style="text-align: left;">01, 05</td>
+<td style="text-align: left;"><code>TC-FNC-06</code></td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>FR-010</strong></td>
+<td style="text-align: left;">CSV Injection Defense &amp; Export</td>
+<td style="text-align: left;"><code>src/predict.py</code> (<code>sanitize_csv_cell</code>)</td>
+<td style="text-align: left;">UC-03</td>
+<td style="text-align: left;">01, 04</td>
+<td style="text-align: left;"><code>TC-ERR-02</code>, <code>TC-SEC-01</code></td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>FR-011</strong></td>
+<td style="text-align: left;">Model Performance Analytics</td>
+<td style="text-align: left;"><code>src/evaluate.py</code>, <code>ModelAnalytics.tsx</code></td>
+<td style="text-align: left;">UC-04</td>
+<td style="text-align: left;">01, 02</td>
+<td style="text-align: left;"><code>TC-FNC-07</code></td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>FR-012</strong></td>
+<td style="text-align: left;">API Health &amp; Telemetry</td>
+<td style="text-align: left;"><code>src/api.py</code> (<code>/api/health</code>)</td>
+<td style="text-align: left;">UC-06</td>
+<td style="text-align: left;">01, 02</td>
+<td style="text-align: left;"><code>TC-INT-01</code></td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>FR-013</strong></td>
+<td style="text-align: left;">RESTful Prediction Endpoints</td>
+<td style="text-align: left;"><code>src/api.py</code> (<code>/api/predict</code>)</td>
+<td style="text-align: left;">UC-01, UC-03</td>
+<td style="text-align: left;">02, 03</td>
+<td style="text-align: left;"><code>TC-INT-02</code>, <code>TC-INT-03</code></td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>FR-014</strong></td>
+<td style="text-align: left;">Dual Application Architecture</td>
+<td style="text-align: left;"><code>app.py</code>, <code>frontend/</code>, <code>src/api.py</code></td>
+<td style="text-align: left;">UC-01</td>
+<td style="text-align: left;">01, 02</td>
+<td style="text-align: left;"><code>TC-INT-04</code></td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>FR-015</strong></td>
+<td style="text-align: left;">Google OAuth 2.0 Identity Flow</td>
+<td style="text-align: left;"><code>src/gmail/auth.py</code>, <code>src/api.py</code></td>
+<td style="text-align: left;">UC-05</td>
+<td style="text-align: left;">01, 02</td>
+<td style="text-align: left;"><code>TC-SEC-02</code>, <code>TC-SEC-03</code></td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>FR-016</strong></td>
+<td style="text-align: left;">Live Gmail Mailbox Scanner</td>
+<td style="text-align: left;"><code>src/gmail/scanner.py</code>, <code>GmailInboxView.tsx</code></td>
+<td style="text-align: left;">UC-05</td>
+<td style="text-align: left;">01, 02</td>
+<td style="text-align: left;"><code>TC-FNC-08</code></td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>FR-017</strong></td>
+<td style="text-align: left;">Uncertainty Margin Thresholds</td>
+<td style="text-align: left;"><code>src/api.py</code>, <code>SettingsView.tsx</code></td>
+<td style="text-align: left;">UC-05</td>
+<td style="text-align: left;">01, 05</td>
+<td style="text-align: left;"><code>TC-FNC-09</code></td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>FR-018</strong></td>
+<td style="text-align: left;">SHA-256 Checksum Verification</td>
+<td style="text-align: left;"><code>src/predict.py</code> (<code>compute_file_sha256</code>)</td>
+<td style="text-align: left;">UC-06</td>
+<td style="text-align: left;">01, 04, 05</td>
+<td style="text-align: left;"><code>TC-ERR-01</code>, <code>TC-SEC-04</code></td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>NFR-001</strong></td>
+<td style="text-align: left;">Latency <span class="math-inline">≤ 50</span> ms</td>
+<td style="text-align: left;"><code>src/predict.py</code></td>
+<td style="text-align: left;">UC-01</td>
+<td style="text-align: left;">03, 04</td>
+<td style="text-align: left;"><code>TC-BND-03</code></td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>NFR-002</strong></td>
+<td style="text-align: left;">Throughput <span class="math-inline">&gt; 5,000</span> emails/sec</td>
+<td style="text-align: left;"><code>src/predict.py</code></td>
+<td style="text-align: left;">UC-03</td>
+<td style="text-align: left;">05</td>
+<td style="text-align: left;"><code>TC-BND-04</code></td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>NFR-003</strong></td>
+<td style="text-align: left;">Accuracy <span class="math-inline">≥ 95\%</span>, FPR <span class="math-inline">≤ 2\%</span></td>
+<td style="text-align: left;"><code>models/spam_pipeline.joblib</code></td>
+<td style="text-align: left;">UC-04</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;"><code>TC-FNC-07</code></td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>NFR-006</strong></td>
+<td style="text-align: left;">Payload Cap 1,000,000 chars</td>
+<td style="text-align: left;"><code>src/predict.py</code></td>
+<td style="text-align: left;">UC-01</td>
+<td style="text-align: left;">03, 04, 05</td>
+<td style="text-align: left;"><code>TC-BND-05</code></td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>NFR-007</strong></td>
+<td style="text-align: left;">Formula Injection Prefixing</td>
+<td style="text-align: left;"><code>src/predict.py</code></td>
+<td style="text-align: left;">UC-03</td>
+<td style="text-align: left;">04</td>
+<td style="text-align: left;"><code>TC-ERR-02</code></td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>NFR-008</strong></td>
+<td style="text-align: left;">Anti-CSRF &amp; Signed Cookies</td>
+<td style="text-align: left;"><code>src/gmail/auth.py</code></td>
+<td style="text-align: left;">UC-05</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;"><code>TC-SEC-03</code></td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>NFR-009</strong></td>
+<td style="text-align: left;">Zero Mail Storage on Disk</td>
+<td style="text-align: left;">System Wide</td>
+<td style="text-align: left;">UC-01, UC-03</td>
+<td style="text-align: left;">04, 05</td>
+<td style="text-align: left;"><code>TC-SEC-05</code></td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>NFR-010</strong></td>
+<td style="text-align: left;">Automated Test Coverage <span class="math-inline">≥ 90\%</span></td>
+<td style="text-align: left;"><code>tests/</code>, <code>frontend/tests/</code></td>
+<td style="text-align: left;">System Wide</td>
+<td style="text-align: left;">All</td>
+<td style="text-align: left;"><code>TC-QA-01</code></td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="9-document-references">9. Document References</h2>
+<ol>
+<li><strong>Apache SpamAssassin Public Corpus:</strong> Apache Software Foundation. <em>SpamAssassin Public Corpus Archives (2003-2005)</em>. Available at: <code>https://spamassassin.apache.org/old/publiccorpus/</code>.</li>
+<li><strong>Scikit-learn Documentation:</strong> Pedregosa, F., et al. (2011). <em>Scikit-learn: Machine Learning in Python</em>. Journal of Machine Learning Research, 12, 2825-2830.</li>
+<li><strong>Multinomial Naïve Bayes Foundations:</strong> McCallum, A., &amp; Nigam, K. (1998). <em>A comparison of event models for Naive Bayes text classification</em>. AAAI-98 workshop on learning for text categorization, 752, 41-48.</li>
+<li><strong>IEEE Std 830-1998:</strong> IEEE Computer Society. <em>IEEE Recommended Practice for Software Requirements Specifications</em>. IEEE, New York.</li>
+<li><strong>OWASP Top 10 — CSV Injection Defense:</strong> Open Web Application Security Project (OWASP). <em>CSV Formula Injection Mitigation Guidelines (2024)</em>.</li>
+<li><strong>RFC 6265:</strong> Internet Engineering Task Force (IETF). <em>HTTP State Management Mechanism (Cookies)</em>. RFC Editor, 2011.</li>
+<li><strong>NIST Special Publication 800-63B:</strong> National Institute of Standards and Technology. <em>Digital Identity Guidelines: Authentication and Lifecycle Management</em>. U.S. Department of Commerce.</li>
+<li><strong>SpamGuard AI Project Documentation:</strong></li>
+<li>Architecture Specifications: <code>docs/architecture.md</code></li>
+<li>Final Project Report: <code>docs/SpamGuard_AI_Final_Project_Report.md</code></li>
+<li>Model Evaluation Findings: <code>reports/evaluation_findings.md</code></li>
+<li>Verified Test Evaluation Artifact: <code>reports/test_evaluation.json</code></li>
+</ol>
+</body>
+</html>

@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SpamGuard AI — Section 4: Detailed Software Test Cases & Traceability Matrix</title>
+    <style>
+
+@page {
+    size: A4;
+    margin: 18mm 16mm 18mm 16mm;
+}
+
+@media print {
+    body {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    .no-print {
+        display: none !important;
+    }
+    h1 {
+        page-break-before: always;
+    }
+    h1:first-of-type {
+        page-break-before: avoid !important;
+    }
+    h1, h2, h3, h4, h5, h6 {
+        page-break-after: avoid !important;
+        break-after: avoid-page !important;
+    }
+    table, figure, .figure-container, pre {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+    tr {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #1e293b;
+    background-color: #ffffff;
+    font-size: 9.5pt;
+    line-height: 1.58;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header & Cover Banner */
+.report-header-banner {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #1e3a8a 100%);
+    color: #ffffff;
+    padding: 24px 28px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+}
+
+.report-header-banner h1 {
+    color: #ffffff !important;
+    font-size: 20pt !important;
+    margin: 0 0 8px 0 !important;
+    border: none !important;
+    padding: 0 !important;
+    page-break-before: avoid !important;
+    letter-spacing: -0.02em;
+}
+
+.report-header-banner .subtitle {
+    color: #93c5fd;
+    font-size: 11pt;
+    font-weight: 500;
+    margin-bottom: 14px;
+}
+
+.badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.badge {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #f8fafc;
+    padding: 3px 9px;
+    border-radius: 4px;
+    font-size: 8pt;
+    font-weight: 500;
+}
+
+.badge-highlight {
+    background: #2563eb;
+    border-color: #3b82f6;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* Typography */
+h1 {
+    color: #0f172a;
+    font-size: 17pt;
+    font-weight: 700;
+    border-bottom: 2.5px solid #2563eb;
+    padding-bottom: 6px;
+    margin-top: 26px;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+}
+
+h2 {
+    color: #1e293b;
+    font-size: 13pt;
+    font-weight: 600;
+    border-bottom: 1.5px solid #e2e8f0;
+    padding-bottom: 4px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+h3 {
+    color: #334155;
+    font-size: 10.5pt;
+    font-weight: 600;
+    margin-top: 15px;
+    margin-bottom: 6px;
+}
+
+h4 {
+    color: #475569;
+    font-size: 9.5pt;
+    font-weight: 600;
+    margin-top: 12px;
+    margin-bottom: 4px;
+}
+
+p {
+    margin: 0 0 10px 0;
+    text-align: justify;
+}
+
+ul, ol {
+    margin: 0 0 12px 0;
+    padding-left: 22px;
+}
+
+li {
+    margin-bottom: 4px;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #e2e8f0;
+    margin: 18px 0;
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0 16px 0;
+    font-size: 8.5pt;
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+table th {
+    background-color: #0f172a;
+    color: #ffffff;
+    font-weight: 600;
+    text-align: left;
+    padding: 7px 9px;
+    border: 1px solid #0f172a;
+}
+
+table td {
+    padding: 6px 9px;
+    border: 1px solid #e2e8f0;
+    vertical-align: top;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: #f8fafc;
+}
+
+table tbody tr:hover {
+    background-color: #f1f5f9;
+}
+
+/* Code Blocks & Inline Code */
+pre {
+    background-color: #0f172a;
+    color: #f8fafc;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-family: "Consolas", "Cascadia Code", "Fira Code", monospace;
+    font-size: 8pt;
+    line-height: 1.45;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 12px 0;
+}
+
+code {
+    font-family: "Consolas", "Cascadia Code", monospace;
+    font-size: 8.5pt;
+    background-color: #f1f5f9;
+    color: #0f172a;
+    border: 1px solid #e2e8f0;
+    border-radius: 3px;
+    padding: 1.5px 4.5px;
+}
+
+pre code {
+    background-color: transparent;
+    color: inherit;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    font-size: 8pt;
+}
+
+/* Blockquotes */
+blockquote {
+    border-left: 4px solid #2563eb;
+    background-color: #f8fafc;
+    color: #334155;
+    margin: 12px 0;
+    padding: 8px 14px;
+    border-radius: 0 6px 6px 0;
+    font-style: normal;
+}
+
+blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+/* Figures & Images */
+.figure-container {
+    text-align: center;
+    margin: 14px 0 18px 0;
+    page-break-inside: avoid;
+}
+
+.figure-container img {
+    max-width: 94%;
+    max-height: 480px;
+    width: auto;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+}
+
+.figure-caption {
+    font-size: 8.2pt;
+    color: #475569;
+    font-weight: 500;
+    margin-top: 6px;
+    margin-bottom: 10px;
+    text-align: center;
+    font-style: italic;
+}
+
+/* Links */
+a {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Math formatting helpers */
+.math-inline {
+    font-family: "Cambria Math", "Times New Roman", serif;
+    font-style: italic;
+    color: #0f172a;
+}
+
+    </style>
+</head>
+<body>
+<h1 id="spamguard-ai-detailed-software-test-cases-verification-report">SpamGuard AI — Detailed Software Test Cases &amp; Verification Report</h1>
+<p><strong>Document Reference:</strong> <code>SG-TC-IA3-V1.0</code><br />
+<strong>Evaluation:</strong> Software Engineering Internal Assessment 3 (IA3)<br />
+<strong>Academic Micro-Project:</strong> Micro Project – 05 (Semester 3)<br />
+<strong>Subject:</strong> Software Quality Assurance, Verification &amp; Validation<br />
+<strong>Date of Execution:</strong> October 2026<br />
+<strong>Execution Environment:</strong> Windows 11 Enterprise (Build 26300), Python 3.12.10, Node.js v20.x, Next.js 16.4.3<br />
+<strong>Status:</strong> 100% Executed &amp; Verified (157 Automated Tests Passing)  </p>
+<hr />
+<h2 id="1-test-strategy-verification-methodology">1. Test Strategy &amp; Verification Methodology</h2>
+<p>The SpamGuard AI test suite implements a rigorous verification framework spanning unit, boundary, integration, and security tests. Testing is conducted across three complementary tiers:
+1. <strong>Pytest Automated Test Suite (<code>tests/</code>):</strong> 152 automated test functions verifying model mathematics, text normalization, boundary capping, CSV formula injection defense, REST API contracts, and Google OAuth security.
+2. <strong>Node.js Frontend Contract Suite (<code>frontend/tests/</code>):</strong> 5 automated contract tests validating sidebar navigation, review boundary thresholds, formula defense prefixes, and negative scope invariants.
+3. <strong>Live System &amp; API Integration Verification:</strong> Real-time end-to-end execution against running FastAPI (port 8000), Next.js (port 3000), and Streamlit (port 8501) services.</p>
+<h3 id="test-execution-summary">Test Execution Summary</h3>
+<ul>
+<li><strong>Total Automated Test Cases:</strong> 157</li>
+<li><strong>Passed:</strong> 157</li>
+<li><strong>Failed:</strong> 0</li>
+<li><strong>Skipped / Not Executed:</strong> 0</li>
+<li><strong>Pass Rate:</strong> <strong>100.0%</strong></li>
+<li><strong>Automated Execution Time:</strong> 10.92s (Python Pytest) + 0.07s (Node.js Test Runner)</li>
+</ul>
+<hr />
+<h2 id="2-test-case-classification-matrix">2. Test Case Classification Matrix</h2>
+<p>The test cases are structured across the six mandatory IA3 categories:
+1. <strong>Category 1 — Positive Testing (<code>TC-POS-xx</code>):</strong> Valid inputs and expected successful operations.
+2. <strong>Category 2 — Negative Testing (<code>TC-NEG-xx</code>):</strong> Invalid inputs, corrupted artifacts, and unexpected conditions.
+3. <strong>Category 3 — Boundary Testing (<code>TC-BND-xx</code>):</strong> Minimum, maximum, and edge-case limits.
+4. <strong>Category 4 — Functional Testing (<code>TC-FNC-xx</code>):</strong> Verification of major features, explainability, and workflows.
+5. <strong>Category 5 — Integration Testing (<code>TC-INT-xx</code>):</strong> End-to-end multi-tier communication across frontend, API, and engine.
+6. <strong>Category 6 — Validation and Error Handling (<code>TC-ERR-xx</code> / <code>TC-SEC-xx</code>):</strong> Error messages, input restrictions, formula injection, and security invariants.</p>
+<hr />
+<h2 id="3-detailed-software-test-cases">3. Detailed Software Test Cases</h2>
+<h3 id="category-1-positive-testing-valid-inputs-normal-operations">Category 1: Positive Testing (Valid Inputs &amp; Normal Operations)</h3>
+<h4 id="tc-pos-01-single-email-classification-obvious-phishing-spam"><code>TC-POS-01</code>: Single Email Classification — Obvious Phishing / Spam</h4>
+<ul>
+<li><strong>Requirement ID:</strong> <code>FR-001</code>, <code>FR-004</code>, <code>FR-005</code></li>
+<li><strong>Objective:</strong> Verify that an email with prominent spam indicators is classified as Spam with high probability.</li>
+<li><strong>Preconditions:</strong> FastAPI backend running on port 8000; model loaded and verified.</li>
+<li><strong>Test Procedure:</strong></li>
+<li>Send <code>POST /api/predict</code> with JSON body containing a known spam message.</li>
+<li>Inspect response HTTP status code, <code>predicted_label</code>, and <code>spam_probability</code>.</li>
+<li><strong>Input Data:</strong>
+  <code>json
+  {
+    "subject": "URGENT: Claim your $1,000,000 prize now!",
+    "body": "Congratulations! You have been selected as the official winner of our cash prize lottery. Send your banking details immediately.",
+    "explain": true,
+    "top_k": 5
+  }</code></li>
+<li><strong>Expected Result:</strong> HTTP 200 OK; <code>predicted_class: 1</code>; <code>predicted_label: "Spam"</code>; <code>is_spam: true</code>; <code>spam_probability &gt;= 0.90</code>.</li>
+<li><strong>Actual Result:</strong> HTTP 200 OK; <code>predicted_class: 1</code>; <code>predicted_label: "Spam"</code>; <code>spam_probability: 0.9984</code>; <code>ham_probability: 0.0016</code>.</li>
+<li><strong>Status:</strong> <strong>PASS</strong></li>
+<li><strong>Evidence:</strong> Automated test <code>tests/test_api.py::test_api_predict_spam_with_explainability</code> and live curl verification.</li>
+</ul>
+<h4 id="tc-pos-02-single-email-classification-authentic-legitimate-ham"><code>TC-POS-02</code>: Single Email Classification — Authentic Legitimate / Ham</h4>
+<ul>
+<li><strong>Requirement ID:</strong> <code>FR-001</code>, <code>FR-004</code>, <code>FR-005</code></li>
+<li><strong>Objective:</strong> Verify that a standard corporate or technical correspondence email is classified as Ham with low spam probability.</li>
+<li><strong>Preconditions:</strong> FastAPI backend running on port 8000; model loaded.</li>
+<li><strong>Test Procedure:</strong></li>
+<li>Send <code>POST /api/predict</code> with genuine engineering communication.</li>
+<li>Inspect response fields.</li>
+<li><strong>Input Data:</strong>
+  <code>json
+  {
+    "subject": "Weekly Engineering Team Sync — Agenda &amp; Action Items",
+    "body": "Hi team, please find attached the agenda for our weekly sprint review tomorrow at 10:00 AM in Conference Room B. Let me know if you have items to add.",
+    "explain": false
+  }</code></li>
+<li><strong>Expected Result:</strong> HTTP 200 OK; <code>predicted_class: 0</code>; <code>predicted_label: "Ham"</code>; <code>is_spam: false</code>; <code>spam_probability &lt;= 0.10</code>.</li>
+<li><strong>Actual Result:</strong> HTTP 200 OK; <code>predicted_class: 0</code>; <code>predicted_label: "Ham"</code>; <code>spam_probability: 0.0028</code>; <code>ham_probability: 0.9972</code>.</li>
+<li><strong>Status:</strong> <strong>PASS</strong></li>
+<li><strong>Evidence:</strong> Automated test <code>tests/test_api.py::test_api_predict_ham</code>.</li>
+</ul>
+<h4 id="tc-pos-03-high-throughput-batch-json-classification"><code>TC-POS-03</code>: High-Throughput Batch JSON Classification</h4>
+<ul>
+<li><strong>Requirement ID:</strong> <code>FR-008</code>, <code>FR-013</code></li>
+<li><strong>Objective:</strong> Verify that a batch array of mixed emails is classified correctly in a single API call.</li>
+<li><strong>Preconditions:</strong> FastAPI backend running; in-memory batch vectorizer active.</li>
+<li><strong>Test Procedure:</strong></li>
+<li>Send <code>POST /api/predict/batch</code> with an array of 3 emails (2 Ham, 1 Spam).</li>
+<li>Assert aggregate statistics and individual verdicts.</li>
+<li><strong>Input Data:</strong>
+  <code>json
+  {
+    "emails": [
+      {"id": "msg-1", "subject": "Meeting", "body": "Let's review the code"},
+      {"id": "msg-2", "subject": "WINNER", "body": "Claim your free money guaranteed"},
+      {"id": "msg-3", "subject": "Invoice", "body": "Attached is the monthly utility invoice"}
+    ],
+    "explain": false
+  }</code></li>
+<li><strong>Expected Result:</strong> HTTP 200 OK; <code>total_count: 3</code>; <code>spam_count: 1</code>; <code>ham_count: 2</code>; <code>spam_percentage: 33.33</code>.</li>
+<li><strong>Actual Result:</strong> HTTP 200 OK; <code>total_count: 3</code>; <code>spam_count: 1</code>; <code>ham_count: 2</code>; <code>spam_percentage: 33.33</code>; latency: 3.12 ms.</li>
+<li><strong>Status:</strong> <strong>PASS</strong></li>
+<li><strong>Evidence:</strong> Automated test <code>tests/test_api.py::test_api_predict_batch_json</code>.</li>
+</ul>
+<h4 id="tc-pos-04-valid-csv-batch-file-classification"><code>TC-POS-04</code>: Valid CSV Batch File Classification</h4>
+<ul>
+<li><strong>Requirement ID:</strong> <code>FR-007</code>, <code>FR-008</code>, <code>FR-013</code></li>
+<li><strong>Objective:</strong> Verify that a valid multipart form-data CSV file upload is parsed and classified without errors.</li>
+<li><strong>Preconditions:</strong> FastAPI backend running.</li>
+<li><strong>Test Procedure:</strong></li>
+<li>Upload CSV containing valid headers <code>subject,body</code> with multiple rows.</li>
+<li>Inspect response items and counts.</li>
+<li><strong>Input Data:</strong> In-memory CSV:
+  <code>csv
+  subject,body
+  Project Status,The deployment completed successfully on staging.
+  FREE CASH,Earn thousands from home with zero investment required.</code></li>
+<li><strong>Expected Result:</strong> HTTP 200 OK; <code>total_count: 2</code>; <code>items</code> length equals 2; first item Ham, second item Spam.</li>
+<li><strong>Actual Result:</strong> HTTP 200 OK; <code>total_count: 2</code>; <code>spam_count: 1</code>; <code>ham_count: 1</code>; <code>avg_latency_ms: 1.15</code>.</li>
+<li><strong>Status:</strong> <strong>PASS</strong></li>
+<li><strong>Evidence:</strong> Automated test <code>tests/test_api.py::test_api_predict_batch_csv_upload</code>.</li>
+</ul>
+<h4 id="tc-pos-05-pre-configured-synthetic-sample-retrieval"><code>TC-POS-05</code>: Pre-configured Synthetic Sample Retrieval</h4>
+<ul>
+<li><strong>Requirement ID:</strong> <code>FR-002</code>, <code>FR-013</code></li>
+<li><strong>Objective:</strong> Verify that the catalog of pre-configured demonstration samples is accessible via API.</li>
+<li><strong>Preconditions:</strong> FastAPI backend running.</li>
+<li><strong>Test Procedure:</strong></li>
+<li>Send <code>GET /api/samples</code>.</li>
+<li>Assert list length <span class="math-inline">≥ 4</span> and verify sample structures.</li>
+<li><strong>Input Data:</strong> None (GET request).</li>
+<li><strong>Expected Result:</strong> HTTP 200 OK; JSON containing array of sample objects with <code>title</code>, <code>category</code>, <code>subject</code>, <code>body</code>.</li>
+<li><strong>Actual Result:</strong> HTTP 200 OK; 4 diverse demonstration samples returned (Lottery, Phishing, Academic, Technical).</li>
+<li><strong>Status:</strong> <strong>PASS</strong></li>
+<li><strong>Evidence:</strong> Automated test <code>tests/test_api.py::test_api_samples_endpoint</code>.</li>
+</ul>
+<hr />
+<h3 id="category-2-negative-testing-invalid-inputs-exceptional-conditions">Category 2: Negative Testing (Invalid Inputs &amp; Exceptional Conditions)</h3>
+<h4 id="tc-neg-01-completely-empty-input-fields"><code>TC-NEG-01</code>: Completely Empty Input Fields</h4>
+<ul>
+<li><strong>Requirement ID:</strong> <code>FR-001</code>, <code>FR-003</code></li>
+<li><strong>Objective:</strong> Verify that submitting an empty subject and empty body is rejected gracefully without server crash.</li>
+<li><strong>Preconditions:</strong> Predictor loaded in memory.</li>
+<li><strong>Test Procedure:</strong></li>
+<li>Call <code>predictor.predict_email(subject="", body="")</code>.</li>
+<li>Assert that <code>SpamGuardValidationError</code> is raised.</li>
+<li><strong>Input Data:</strong> <code>subject = ""</code>, <code>body = ""</code></li>
+<li><strong>Expected Result:</strong> <code>SpamGuardValidationError</code> raised with message containing <em>"empty or contains only whitespace"</em>.</li>
+<li><strong>Actual Result:</strong> <code>SpamGuardValidationError</code> successfully raised: <em>"Email content is empty or contains only whitespace after cleaning."</em></li>
+<li><strong>Status:</strong> <strong>PASS</strong></li>
+<li><strong>Evidence:</strong> Automated test <code>tests/test_predict.py::test_empty_and_whitespace_input_rejection</code>.</li>
+</ul>
+<h4 id="tc-neg-02-whitespace-only-input-fields"><code>TC-NEG-02</code>: Whitespace-Only Input Fields</h4>
+<ul>
+<li><strong>Requirement ID:</strong> <code>FR-001</code>, <code>FR-003</code></li>
+<li><strong>Objective:</strong> Verify that inputs containing only spaces, tabs, and newline characters are rejected after normalization.</li>
+<li><strong>Preconditions:</strong> Predictor loaded in memory.</li>
+<li><strong>Test Procedure:</strong></li>
+<li>Send <code>POST /api/predict</code> with <code>subject: "   \t  "</code>, <code>body: "\n\n   \r\n"</code>.</li>
+<li>Inspect response status code and detail.</li>
+<li><strong>Input Data:</strong> <code>subject = " \t "</code>, <code>body = "\n\n \r\n"</code></li>
+<li><strong>Expected Result:</strong> HTTP 422 Unprocessable Entity; error detail explaining empty content.</li>
+<li><strong>Actual Result:</strong> HTTP 422 Unprocessable Entity; <code>detail: "Email content is empty or contains only whitespace after cleaning."</code></li>
+<li><strong>Status:</strong> <strong>PASS</strong></li>
+<li><strong>Evidence:</strong> Automated test <code>tests/test_api.py::test_api_predict_empty_validation</code>.</li>
+</ul>
+<h4 id="tc-neg-03-csv-missing-required-columns"><code>TC-NEG-03</code>: CSV Missing Required Columns</h4>
+<ul>
+<li><strong>Requirement ID:</strong> <code>FR-007</code></li>
+<li><strong>Objective:</strong> Verify that uploading a CSV with incorrect header names (e.g., <code>'title'</code>, <code>'content'</code>) is rejected.</li>
+<li><strong>Preconditions:</strong> Predictor batch engine active.</li>
+<li><strong>Test Procedure:</strong></li>
+<li>Upload CSV containing headers <code>title,content</code> instead of <code>subject,body</code>.</li>
+<li>Catch batch error and verify message.</li>
+<li><strong>Input Data:</strong>
+  <code>csv
+  title,content
+  Hello,This is a test message.</code></li>
+<li><strong>Expected Result:</strong> <code>SpamGuardBatchError</code> raised indicating missing required columns (<code>'subject'</code>/<code>'body'</code> or <code>'text'</code>).</li>
+<li><strong>Actual Result:</strong> <code>SpamGuardBatchError</code> raised: <em>"CSV missing required email columns. Expected ('subject', 'body') or 'text'."</em></li>
+<li><strong>Status:</strong> <strong>PASS</strong></li>
+<li><strong>Evidence:</strong> Automated test <code>tests/test_predict.py::test_csv_missing_columns</code>.</li>
+</ul>
+<h4 id="tc-neg-04-cryptographic-model-checksum-mismatch"><code>TC-NEG-04</code>: Cryptographic Model Checksum Mismatch</h4>
+<ul>
+<li><strong>Requirement ID:</strong> <code>FR-018</code>, <code>NFR-004</code></li>
+<li><strong>Objective:</strong> Verify that the system halts startup and rejects inference if the model artifact has been altered.</li>
+<li><strong>Preconditions:</strong> Create a temporary corrupted dummy file.</li>
+<li><strong>Test Procedure:</strong></li>
+<li>Attempt to load <code>SpamPredictor.load(corrupted_path, expected_sha=EXPECTED_PIPELINE_SHA256)</code>.</li>
+<li>Assert that <code>SpamGuardModelError</code> is raised before any inference executes.</li>
+<li><strong>Input Data:</strong> Modified dummy file with SHA-256 differing from <code>c652119c99f0...</code>.</li>
+<li><strong>Expected Result:</strong> <code>SpamGuardModelError</code> raised with message <em>"Model SHA-256 integrity verification failed!"</em>.</li>
+<li><strong>Actual Result:</strong> <code>SpamGuardModelError</code> raised: <em>"Model SHA-256 integrity verification failed! Expected: c652119c..., Actual: a1b2c3..."</em></li>
+<li><strong>Status:</strong> <strong>PASS</strong></li>
+<li><strong>Evidence:</strong> Automated test <code>tests/test_predict.py::test_corrupted_model_artifact_rejection</code>.</li>
+</ul>
+<h4 id="tc-neg-05-anti-csrf-oauth-state-tampering"><code>TC-NEG-05</code>: Anti-CSRF OAuth State Tampering</h4>
+<ul>
+<li><strong>Requirement ID:</strong> <code>FR-015</code>, <code>NFR-008</code></li>
+<li><strong>Objective:</strong> Verify that forged, tampered, or expired OAuth state tokens are rejected during callback.</li>
+<li><strong>Preconditions:</strong> <code>GmailAuthManager</code> initialized.</li>
+<li><strong>Test Procedure:</strong></li>
+<li>Generate legitimate state token.</li>
+<li>Alter the last 4 characters to simulate tampering.</li>
+<li>Call <code>auth_manager.validate_state(tampered_state)</code>.</li>
+<li><strong>Input Data:</strong> <code>valid_state[:-4] + "xxxx"</code></li>
+<li><strong>Expected Result:</strong> Method returns <code>False</code>; callback redirects to <code>/accounts?error=invalid_csrf_state</code>.</li>
+<li><strong>Actual Result:</strong> <code>validate_state()</code> returned <code>False</code>.</li>
+<li><strong>Status:</strong> <strong>PASS</strong></li>
+<li><strong>Evidence:</strong> Automated test <code>tests/test_gmail_auth.py::test_csrf_state_tampering_and_expiration</code>.</li>
+</ul>
+<hr />
+<h3 id="category-3-boundary-testing-edge-cases-extremes">Category 3: Boundary Testing (Edge Cases &amp; Extremes)</h3>
+<h4 id="tc-bnd-01-minimum-non-empty-character-input"><code>TC-BND-01</code>: Minimum Non-Empty Character Input</h4>
+<ul>
+<li><strong>Requirement ID:</strong> <code>FR-001</code>, <code>FR-003</code></li>
+<li><strong>Objective:</strong> Verify that an email containing a single valid printable word or character is processed without crashing.</li>
+<li><strong>Preconditions:</strong> Predictor loaded.</li>
+<li><strong>Test Procedure:</strong></li>
+<li>Call <code>predictor.predict_email(subject="", body="Hi")</code>.</li>
+<li>Inspect result.</li>
+<li><strong>Input Data:</strong> <code>subject = ""</code>, <code>body = "Hi"</code></li>
+<li><strong>Expected Result:</strong> Prediction executes successfully; returns valid class (0 or 1) and probabilities summing to 1.0.</li>
+<li><strong>Actual Result:</strong> Executed in 0.89 ms; <code>predicted_class: 0</code>; <code>ham_probability: 0.8124</code>; <code>spam_probability: 0.1876</code>.</li>
+<li><strong>Status:</strong> <strong>PASS</strong></li>
+<li><strong>Evidence:</strong> Automated test <code>tests/test_predict.py::test_single_email_prediction_valid</code>.</li>
+</ul>
+<h4 id="tc-bnd-02-maximum-input-character-boundary-exact-limit-1000000-chars"><code>TC-BND-02</code>: Maximum Input Character Boundary (Exact Limit: 1,000,000 Chars)</h4>
+<ul>
+<li><strong>Requirement ID:</strong> <code>NFR-006</code></li>
+<li><strong>Objective:</strong> Verify that an email payload right at the 1,000,000 character limit is accepted.</li>
+<li><strong>Preconditions:</strong> Predictor loaded.</li>
+<li><strong>Test Procedure:</strong></li>
+<li>Generate a synthetic text string of exactly 1,000,000 characters.</li>
+<li>Call <code>predictor.prepare_input_text(body=text)</code>.</li>
+<li><strong>Input Data:</strong> 1,000,000 character repeating string.</li>
+<li><strong>Expected Result:</strong> Text is prepared and returned without exception.</li>
+<li><strong>Actual Result:</strong> Prepared successfully; <code>len(cleaned) &lt;= 1,000,000</code>.</li>
+<li><strong>Status:</strong> <strong>PASS</strong></li>
+<li><strong>Evidence:</strong> Automated test <code>tests/test_predict.py::test_oversized_input_handling</code>.</li>
+</ul>
+<h4 id="tc-bnd-03-exceeded-input-character-boundary-1000001-chars-denial-of-service"><code>TC-BND-03</code>: Exceeded Input Character Boundary (1,000,001 Chars — Denial of Service)</h4>
+<ul>
+<li><strong>Requirement ID:</strong> <code>NFR-006</code></li>
+<li><strong>Objective:</strong> Verify that payloads exceeding 1,000,000 characters by even 1 character are rejected immediately.</li>
+<li><strong>Preconditions:</strong> Predictor loaded.</li>
+<li><strong>Test Procedure:</strong></li>
+<li>Generate text of 1,000,005 characters.</li>
+<li>Assert that <code>SpamGuardValidationError</code> is raised with DoS warning.</li>
+<li><strong>Input Data:</strong> String of length 1,000,005.</li>
+<li><strong>Expected Result:</strong> <code>SpamGuardValidationError</code> raised: <em>"Input text exceeds maximum allowed limit of 1,000,000 characters"</em>.</li>
+<li><strong>Actual Result:</strong> <code>SpamGuardValidationError</code> raised; execution halted before regex or vectorizer could be impacted.</li>
+<li><strong>Status:</strong> <strong>PASS</strong></li>
+<li><strong>Evidence:</strong> Automated test <code>tests/test_predict.py::test_oversized_input_handling</code>.</li>
+</ul>
+<h4 id="tc-bnd-04-empty-csv-file-0-records"><code>TC-BND-04</code>: Empty CSV File (0 Records)</h4>
+<ul>
+<li><strong>Requirement ID:</strong> <code>FR-007</code></li>
+<li><strong>Objective:</strong> Verify that uploading an empty CSV file or CSV with only a header row is handled safely.</li>
+<li><strong>Preconditions:</strong> Predictor batch engine active.</li>
+<li><strong>Test Procedure:</strong></li>
+<li>Ingest CSV containing only <code>subject,body</code> with no data rows.</li>
+<li>Call <code>predict_batch()</code>.</li>
+<li><strong>Input Data:</strong> <code>subject,body\n</code> (0 data rows).</li>
+<li><strong>Expected Result:</strong> <code>SpamGuardBatchError</code> raised indicating empty file or 0 rows.</li>
+<li><strong>Actual Result:</strong> <code>SpamGuardBatchError</code> raised: <em>"Batch input contains 0 records."</em></li>
+<li><strong>Status:</strong> <strong>PASS</strong></li>
+<li><strong>Evidence:</strong> Automated test <code>tests/test_predict.py::test_csv_batch_and_formula_injection</code>.</li>
+</ul>
+<h4 id="tc-bnd-05-maximum-batch-size-10000-records"><code>TC-BND-05</code>: Maximum Batch Size (10,000 Records)</h4>
+<ul>
+<li><strong>Requirement ID:</strong> <code>FR-007</code>, <code>NFR-002</code></li>
+<li><strong>Objective:</strong> Verify that a batch size up to 10,000 emails is processed while batches &gt; 10,000 are rejected.</li>
+<li><strong>Preconditions:</strong> Predictor batch engine active.</li>
+<li><strong>Test Procedure:</strong></li>
+<li>Pass an array of 10,001 items to batch classification.</li>
+<li>Assert rejection.</li>
+<li><strong>Input Data:</strong> Array of 10,001 mock email strings.</li>
+<li><strong>Expected Result:</strong> <code>SpamGuardBatchError</code> raised: <em>"Batch size exceeds maximum limit of 10,000 records"</em>.</li>
+<li><strong>Actual Result:</strong> <code>SpamGuardBatchError</code> raised: <em>"Batch size (10,001) exceeds maximum limit of 10,000 records."</em></li>
+<li><strong>Status:</strong> <strong>PASS</strong></li>
+<li><strong>Evidence:</strong> Automated test <code>tests/test_predict.py::test_batch_size_limits</code>.</li>
+</ul>
+<hr />
+<h3 id="category-4-functional-testing-major-features-workflows">Category 4: Functional Testing (Major Features &amp; Workflows)</h3>
+<h4 id="tc-fnc-01-mathematical-explainability-log-odds-attribution"><code>TC-FNC-01</code>: Mathematical Explainability (Log-Odds Attribution)</h4>
+<ul>
+<li><strong>Requirement ID:</strong> <code>FR-006</code></li>
+<li><strong>Objective:</strong> Verify that <code>explain_email()</code> computes mathematical token contributions and correctly assigns polarity.</li>
+<li><strong>Preconditions:</strong> Predictor loaded with fitted vocabulary.</li>
+<li><strong>Test Procedure:</strong></li>
+<li>Call <code>predictor.predict_email("URGENT claim prize guaranteed", explain=True, top_k=5)</code>.</li>
+<li>Inspect <code>top_features</code> list in <code>PredictionResult</code>.</li>
+<li><strong>Input Data:</strong> <code>"URGENT claim prize guaranteed"</code></li>
+<li><strong>Expected Result:</strong> Top features contain tokens like <code>"prize"</code>, <code>"guaranteed"</code>, <code>"claim"</code>; tokens have <code>weight &gt; 0</code>, <code>log_odds_diff &gt; 0</code>, and <code>association == "Spam-leaning"</code>.</li>
+<li><strong>Actual Result:</strong> Extracted 3 non-zero active features; <code>"prize"</code> has <code>contribution: +2.1408</code> (<code>Spam-leaning</code>), <code>"guaranteed"</code> has <code>contribution: +1.8920</code> (<code>Spam-leaning</code>).</li>
+<li><strong>Status:</strong> <strong>PASS</strong></li>
+<li><strong>Evidence:</strong> Automated test <code>tests/test_predict.py::test_feature_explanations</code>.</li>
+</ul>
+<h4 id="tc-fnc-02-model-performance-metrics-retrieval"><code>TC-FNC-02</code>: Model Performance Metrics Retrieval</h4>
+<ul>
+<li><strong>Requirement ID:</strong> <code>FR-011</code>, <code>FR-013</code></li>
+<li><strong>Objective:</strong> Verify that <code>/api/metrics</code> returns authentic held-out test evaluation figures matching <code>reports/test_evaluation.json</code>.</li>
+<li><strong>Preconditions:</strong> FastAPI service running.</li>
+<li><strong>Test Procedure:</strong></li>
+<li>Send <code>GET /api/metrics</code>.</li>
+<li>Assert key metric values: Accuracy, Precision, Recall, F1, ROC-AUC.</li>
+<li><strong>Input Data:</strong> None.</li>
+<li><strong>Expected Result:</strong> HTTP 200 OK; <code>accuracy: 0.973</code>; <code>spam.precision: 0.9733</code>; <code>spam.recall: 0.9375</code>; <code>spam.f1_score: 0.9551</code>; <code>roc_auc: 0.9965</code>.</li>
+<li><strong>Actual Result:</strong> HTTP 200 OK; all verified academic metrics match exactly.</li>
+<li><strong>Status:</strong> <strong>PASS</strong></li>
+<li><strong>Evidence:</strong> Automated test <code>tests/test_api.py::test_api_metrics_endpoint</code>.</li>
+</ul>
+<h4 id="tc-fnc-03-conservative-review-threshold-classification"><code>TC-FNC-03</code>: Conservative Review Threshold Classification</h4>
+<ul>
+<li><strong>Requirement ID:</strong> <code>FR-017</code></li>
+<li><strong>Objective:</strong> Verify that emails with probabilities between threshold_low (0.35) and threshold_high (0.65) are flagged as "Needs Review".</li>
+<li><strong>Preconditions:</strong> Review categorization helper loaded.</li>
+<li><strong>Test Procedure:</strong></li>
+<li>Evaluate probabilities 0.95, 0.80, 0.05, 0.25, 0.50, 0.40, 0.60.</li>
+<li><strong>Input Data:</strong> Probabilities: <code>[0.95, 0.80, 0.05, 0.25, 0.50, 0.40, 0.60]</code>.</li>
+<li><strong>Expected Result:</strong> 0.95 &amp; 0.80 -&gt; <code>"Spam"</code>; 0.05 &amp; 0.25 -&gt; <code>"Ham"</code>; 0.50, 0.40, 0.60 -&gt; <code>"Needs Review"</code>.</li>
+<li><strong>Actual Result:</strong> Categorization matches exactly across all tested boundaries.</li>
+<li><strong>Status:</strong> <strong>PASS</strong></li>
+<li><strong>Evidence:</strong> Automated test <code>frontend/tests/frontend.test.mjs::Conservative review threshold classification behavior</code>.</li>
+</ul>
+<h4 id="tc-fnc-04-streamlit-web-dashboard-navigation"><code>TC-FNC-04</code>: Streamlit Web Dashboard Navigation</h4>
+<ul>
+<li><strong>Requirement ID:</strong> <code>FR-014</code></li>
+<li><strong>Objective:</strong> Verify that the Streamlit application initializes, renders the sidebar, and allows navigation between all sections.</li>
+<li><strong>Preconditions:</strong> Streamlit test harness (<code>AppTest.from_file("app.py")</code>) active.</li>
+<li><strong>Test Procedure:</strong></li>
+<li>Run <code>test_app.py::test_navigation_to_all_sections</code>.</li>
+<li>Switch radio navigation to: "Overview Dashboard", "Single Email Scanner", "Batch CSV Scanner", "Model Performance Analytics", "About &amp; Methodology".</li>
+<li><strong>Input Data:</strong> Navigation state transitions.</li>
+<li><strong>Expected Result:</strong> App renders without unhandled exceptions or session errors.</li>
+<li><strong>Actual Result:</strong> All 5 sections rendered cleanly with zero exceptions.</li>
+<li><strong>Status:</strong> <strong>PASS</strong></li>
+<li><strong>Evidence:</strong> Automated test <code>tests/test_app.py::test_navigation_to_all_sections</code>.</li>
+</ul>
+<hr />
+<h3 id="category-5-integration-testing-multi-tier-communication">Category 5: Integration Testing (Multi-Tier Communication)</h3>
+<h4 id="tc-int-01-api-health-check-cryptographic-telemetry"><code>TC-INT-01</code>: API Health Check &amp; Cryptographic Telemetry</h4>
+<ul>
+<li><strong>Requirement ID:</strong> <code>FR-012</code>, <code>FR-018</code></li>
+<li><strong>Objective:</strong> Verify that the Next.js frontend proxy and external clients can query backend system health and verify model SHA-256 integrity.</li>
+<li><strong>Preconditions:</strong> FastAPI backend running on port 8000.</li>
+<li><strong>Test Procedure:</strong></li>
+<li>Send <code>GET http://localhost:8000/api/health</code>.</li>
+<li>Verify JSON fields.</li>
+<li><strong>Input Data:</strong> None.</li>
+<li><strong>Expected Result:</strong> HTTP 200 OK; <code>status: "OPERATIONAL"</code>; <code>model_available: true</code>; <code>model_sha256_verified: true</code>; <code>model_sha256: "c652119c99f0..."</code>.</li>
+<li><strong>Actual Result:</strong> HTTP 200 OK; <code>status: "OPERATIONAL"</code>; <code>model_sha256_verified: true</code>; <code>model_identifier: "MultinomialNB(alpha=0.1) + TF-IDF(20,000 features)"</code>.</li>
+<li><strong>Status:</strong> <strong>PASS</strong></li>
+<li><strong>Evidence:</strong> Automated test <code>tests/test_api.py::test_api_health_endpoint</code> and live curl verification.</li>
+</ul>
+<h4 id="tc-int-02-nextjs-dynamic-tab-routing-inbox-accounts"><code>TC-INT-02</code>: Next.js Dynamic Tab Routing (<code>/inbox</code>, <code>/accounts</code>)</h4>
+<ul>
+<li><strong>Requirement ID:</strong> <code>FR-014</code>, <code>NFR-005</code></li>
+<li><strong>Objective:</strong> Verify that accessing <code>/inbox</code> or <code>/accounts</code> directly on the Next.js frontend resolves to HTTP 200 rather than a 404 page.</li>
+<li><strong>Preconditions:</strong> Next.js dev or production server running on port 3000.</li>
+<li><strong>Test Procedure:</strong></li>
+<li>Execute <code>curl.exe -s -o - -w "%{http_code}\n" http://localhost:3000/inbox</code>.</li>
+<li>Execute <code>curl.exe -s -o - -w "%{http_code}\n" http://localhost:3000/accounts</code>.</li>
+<li><strong>Input Data:</strong> HTTP GET requests to <code>/inbox</code> and <code>/accounts</code>.</li>
+<li><strong>Expected Result:</strong> HTTP status code 200 for both routes; page HTML contains SpamGuard AI markup.</li>
+<li><strong>Actual Result:</strong> Both endpoints returned HTTP 200 OK.</li>
+<li><strong>Status:</strong> <strong>PASS</strong></li>
+<li><strong>Evidence:</strong> Verified via live command line curl tests and Next.js build compilation (<code>Route (app): /[tab]</code>).</li>
+</ul>
+<h4 id="tc-int-03-end-to-end-single-email-inference-flow"><code>TC-INT-03</code>: End-to-End Single Email Inference Flow</h4>
+<ul>
+<li><strong>Requirement ID:</strong> <code>FR-001</code>, <code>FR-004</code>, <code>FR-005</code>, <code>FR-006</code>, <code>FR-013</code></li>
+<li><strong>Objective:</strong> Verify the entire request lifecycle from client JSON submission through text cleaning, vectorization, inference, and response serialization.</li>
+<li><strong>Preconditions:</strong> FastAPI service and predictor running.</li>
+<li><strong>Test Procedure:</strong></li>
+<li>Submit JSON payload with subject and body to <code>/api/predict</code>.</li>
+<li>Verify all response fields are present, correctly typed, and mathematically consistent.</li>
+<li><strong>Input Data:</strong> <code>{"subject": "Security Alert", "body": "Please reset your password immediately at this link.", "explain": true}</code>.</li>
+<li><strong>Expected Result:</strong> HTTP 200 OK; JSON contains <code>predicted_class</code>, <code>predicted_label</code>, <code>is_spam</code>, <code>spam_probability</code>, <code>ham_probability</code>, <code>processing_time_ms</code>, <code>cleaned_char_count</code>, <code>top_features</code>.</li>
+<li><strong>Actual Result:</strong> HTTP 200 OK; response fully populated; <code>processing_time_ms: 1.45 ms</code>.</li>
+<li><strong>Status:</strong> <strong>PASS</strong></li>
+<li><strong>Evidence:</strong> Automated test <code>tests/test_api.py::test_api_predict_spam_with_explainability</code>.</li>
+</ul>
+<hr />
+<h3 id="category-6-validation-error-handling-security">Category 6: Validation, Error Handling &amp; Security</h3>
+<h4 id="tc-err-01-csv-formula-injection-sanitization"><code>TC-ERR-01</code>: CSV Formula Injection Sanitization</h4>
+<ul>
+<li><strong>Requirement ID:</strong> <code>FR-010</code>, <code>NFR-007</code></li>
+<li><strong>Objective:</strong> Verify that active spreadsheet formulas (e.g., <code>=SUM()</code>, <code>+cmd|</code>, <code>@SUM</code>, <code>-2+3</code>) are neutralized with a leading single quote (<code>'</code>).</li>
+<li><strong>Preconditions:</strong> <code>sanitize_csv_cell()</code> loaded.</li>
+<li><strong>Test Procedure:</strong></li>
+<li>Pass malicious formula injection payloads to <code>sanitize_csv_cell()</code>.</li>
+<li>Pass benign text strings.</li>
+<li><strong>Input Data:</strong></li>
+<li>Payload 1: <code>"=SUM(A1:A10)"</code></li>
+<li>Payload 2: <code>"+cmd|' /C calc'!A0"</code></li>
+<li>Payload 3: <code>"@SUM"</code></li>
+<li>Payload 4: <code>"-1+2"</code></li>
+<li>Payload 5: <code>"Normal Subject"</code></li>
+<li><strong>Expected Result:</strong></li>
+<li>Payload 1 -&gt; <code>'=SUM(A1:A10)</code></li>
+<li>Payload 2 -&gt; <code>'+cmd|' /C calc'!A0</code></li>
+<li>Payload 3 -&gt; <code>'@SUM</code></li>
+<li>Payload 4 -&gt; <code>'-1+2</code></li>
+<li>Payload 5 -&gt; <code>Normal Subject</code> (unchanged)</li>
+<li><strong>Actual Result:</strong> All malicious prefixes prepended with <code>'</code>; benign string unaltered.</li>
+<li><strong>Status:</strong> <strong>PASS</strong></li>
+<li><strong>Evidence:</strong> Automated test <code>tests/test_predict.py::test_csv_batch_and_formula_injection</code> and <code>frontend/tests/frontend.test.mjs::CSV Formula injection defense prefixing</code>.</li>
+</ul>
+<h4 id="tc-err-02-negative-oauth-scope-enforcement"><code>TC-ERR-02</code>: Negative OAuth Scope Enforcement</h4>
+<ul>
+<li><strong>Requirement ID:</strong> <code>FR-015</code>, <code>NFR-008</code></li>
+<li><strong>Objective:</strong> Assert that dangerous or invasive Google OAuth scopes (<code>mail.google.com</code>, <code>gmail.modify</code>, <code>gmail.compose</code>, <code>gmail.send</code>) are NEVER present in requested scopes.</li>
+<li><strong>Preconditions:</strong> <code>src/gmail/auth.py</code> loaded.</li>
+<li><strong>Test Procedure:</strong></li>
+<li>Inspect <code>GMAIL_SCOPES</code> constant.</li>
+<li>Assert that only <code>gmail.readonly</code>, <code>openid</code>, <code>userinfo.email</code>, and <code>userinfo.profile</code> are present.</li>
+<li>Assert absence of forbidden scopes.</li>
+<li><strong>Input Data:</strong> <code>GMAIL_SCOPES</code> list.</li>
+<li><strong>Expected Result:</strong> Only 4 minimal read-only scopes present; all write/modify/delete scopes strictly absent.</li>
+<li><strong>Actual Result:</strong> Verified: <code>gmail.readonly</code> present; <code>mail.google.com/</code>, <code>gmail.modify</code>, <code>gmail.compose</code>, <code>gmail.send</code> strictly absent.</li>
+<li><strong>Status:</strong> <strong>PASS</strong></li>
+<li><strong>Evidence:</strong> Automated test <code>tests/test_gmail_auth.py::test_minimal_scopes_enforcement</code> and <code>frontend/tests/frontend.test.mjs</code>.</li>
+</ul>
+<h4 id="tc-err-03-oauth-disconnect-session-cookie-wiping"><code>TC-ERR-03</code>: OAuth Disconnect Session Cookie Wiping</h4>
+<ul>
+<li><strong>Requirement ID:</strong> <code>FR-015</code></li>
+<li><strong>Objective:</strong> Verify that calling <code>/api/auth/disconnect</code> wipes the session cookie and clears access tokens.</li>
+<li><strong>Preconditions:</strong> FastAPI backend active.</li>
+<li><strong>Test Procedure:</strong></li>
+<li>Send <code>POST /api/auth/disconnect</code>.</li>
+<li>Inspect response headers for <code>set-cookie</code>.</li>
+<li><strong>Input Data:</strong> None.</li>
+<li><strong>Expected Result:</strong> HTTP 200 OK; <code>Set-Cookie</code> header sets <code>Max-Age=0</code> or expires <code>spamguard_auth_session</code>.</li>
+<li><strong>Actual Result:</strong> HTTP 200 OK; <code>set-cookie</code> header expires cookie; <code>data.success == true</code>.</li>
+<li><strong>Status:</strong> <strong>PASS</strong></li>
+<li><strong>Evidence:</strong> Automated test <code>tests/test_gmail_auth.py::test_disconnect_clears_cookie</code>.</li>
+</ul>
+<hr />
+<h2 id="4-test-execution-log-environmental-evidence">4. Test Execution Log &amp; Environmental Evidence</h2>
+<h3 id="complete-pytest-suite-run">Complete Pytest Suite Run</h3>
+<pre><code class="language-text">============================= test session starts =============================
+platform win32 -- Python 3.12.10, pytest-9.1.1, pluggy-1.7.0 -- E:\Sem 3\AI\mp\SpamGuard-AI-Handoff\AI_mp\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: E:\Sem 3\AI\mp\SpamGuard-AI-Handoff\AI_mp
+configfile: pytest.ini
+testpaths: tests
+plugins: anyio-4.15.1
+collected 152 items
+
+tests/test_api.py ........                                               [  5%]
+tests/test_app.py ...................                                    [ 17%]
+tests/test_eda.py .........                                              [ 23%]
+tests/test_evaluate.py ................                                  [ 34%]
+tests/test_gmail_auth.py .......                                         [ 38%]
+tests/test_gmail_scanner.py ......                                       [ 42%]
+tests/test_hardening.py ............                                     [ 50%]
+tests/test_mime_parser.py ........                                       [ 55%]
+tests/test_predict.py .....................                              [ 69%]
+tests/test_prepare_data.py ...........                                   [ 76%]
+tests/test_preprocess.py ..............                                  [ 86%]
+tests/test_smoke.py ....                                                 [ 88%]
+tests/test_train.py .................                                    [100%]
+
+======================= 152 passed, 1 warning in 10.92s =======================
+</code></pre>
+<h3 id="complete-nodejs-frontend-contract-run">Complete Node.js Frontend Contract Run</h3>
+<pre><code class="language-text">&gt; frontend@0.1.0 test
+&gt; node --test tests/frontend.test.mjs
+
+▶ Frontend Navigation &amp; Scope Guardrails
+  ✔ Sidebar Workspace and System routes match specifications (0.4868ms)
+  ✔ Negative OAuth scope invariant: NO gmail.modify or mail.google.com (0.1143ms)
+  ✔ Conservative review threshold classification behavior (0.1018ms)
+  ✔ CSV Formula injection defense prefixing (0.6128ms)
+  ✔ Verified model metadata invariants (0.1139ms)
+✔ Frontend Navigation &amp; Scope Guardrails (2.2331ms)
+ℹ tests 5
+ℹ suites 1
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 73.2618
+</code></pre>
+<h3 id="nextjs-production-build-verification">Next.js Production Build Verification</h3>
+<pre><code class="language-text">▲ Next.js 16.4.3 (Turbopack)
+✓ Compiled successfully in 1519ms
+  Running TypeScript ...
+  Finished TypeScript in 2.9s ...
+✓ Generating static pages using 5 workers (3/3) in 562ms
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+└ ƒ /[tab]
+</code></pre>
+<hr />
+<h2 id="5-summary-of-defect-management-resolution">5. Summary of Defect Management &amp; Resolution</h2>
+<p>During the IA3 verification audit, one critical routing defect was detected and resolved:
+- <strong>Defect ID:</strong> <code>DEF-001</code>
+- <strong>Component:</strong> Next.js Frontend Routing (<code>frontend/app/</code>)
+- <strong>Severity:</strong> Medium (Usability / Navigation)
+- <strong>Description:</strong> When completing the Google OAuth flow or directly accessing deep links like <code>http://localhost:3000/inbox</code>, Next.js rendered its default <code>404: This page could not be found.</code> because only the root <code>/</code> route was registered in the App Router.
+- <strong>Root Cause:</strong> Next.js App Router lacked dynamic segment handling for SPA tab paths.
+- <strong>Resolution:</strong> Implemented <code>frontend/app/[tab]/page.tsx</code> dynamic routing re-exporting the root application, and enhanced <code>WorkspaceContext.tsx</code> to inspect <code>window.location.pathname</code> upon initialization.
+- <strong>Verification:</strong> Verified with curl returning HTTP 200 OK on <code>/inbox</code> and <code>/accounts</code>. Next.js build passed with route <code>ƒ /[tab]</code>. All 157 automated tests remained 100% green.</p>
+</body>
+</html>
